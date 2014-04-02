@@ -469,8 +469,8 @@ int telegram_main_org(int argc, char **argv) {
 }
 
 int telegram_main(char *pub_key){
-  signal (SIGSEGV, sig_segv_handler);
-  signal (SIGABRT, sig_abrt_handler);
+  //signal (SIGSEGV, sig_segv_handler);
+  //signal (SIGABRT, sig_abrt_handler);
   //verbosity = 2;
 
   rsa_public_key_name = pub_key;

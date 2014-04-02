@@ -36,7 +36,7 @@ void tel_new_msg(struct message *M, int fn){
   rb_iv_set(msg, "@from_id", build_peer_rb_obj(M->from_id));
   rb_iv_set(msg, "@to_id", build_peer_rb_obj(M->to_id));
 
-  printf("Funtion number: %d", fn);
+  //printf("Funtion number: %d", fn);
 
   ID sym_rev_message = rb_intern("receive_message");
   rb_funcall(rb_mTelegram, sym_rev_message, 1, msg);

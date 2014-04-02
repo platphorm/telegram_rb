@@ -254,6 +254,7 @@ void set_prompt (const char *s) {
 }
 
 void update_prompt (void) {
+  return;
   print_start ();
   set_prompt (get_default_prompt ());
   if (readline_active) {
@@ -1138,6 +1139,7 @@ int saved_point;
 char *saved_line;
 int prompt_was;
 void print_start (void) {
+  return;
   if (in_readline) { return; }
   assert (!prompt_was);
   if (readline_active) {
@@ -1162,6 +1164,7 @@ void print_start (void) {
 }
 
 void print_end (void) {
+  return;
   if (in_readline) { return; }
   assert (prompt_was);
   if (readline_active) {
@@ -1207,12 +1210,14 @@ int color_stack_pos;
 const char *color_stack[10];
 
 void push_color (const char *color) {
+  return;
   assert (color_stack_pos < 10);
   color_stack[color_stack_pos ++] = color;
   printf ("%s", color);
 }
 
 void pop_color (void) {
+  return;
   assert (color_stack_pos > 0);
   color_stack_pos --;
   if (color_stack_pos >= 1) {
