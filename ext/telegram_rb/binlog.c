@@ -24,6 +24,7 @@
 #ifdef USE_LUA
 # include "lua-tg.h"
 #endif
+#include "telegram_ext.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -829,6 +830,7 @@ void replay_log_event (void) {
         M->flags |= FLAG_PENDING;
       }
       
+      tel_new_msg (M, 1);
       #ifdef USE_LUA
         lua_new_msg (M);
       #endif
@@ -867,6 +869,7 @@ void replay_log_event (void) {
       M->out = get_peer_id (M->from_id) == our_id;
 
       message_insert (M);
+      tel_new_msg (M, 2);
       #ifdef USE_LUA
         lua_new_msg (M);
       #endif
@@ -903,6 +906,7 @@ void replay_log_event (void) {
       M->out = get_peer_id (M->from_id) == our_id;
 
       message_insert (M);
+      //tel_new_msg (M, 3);
       #ifdef USE_LUA
         lua_new_msg (M);
       #endif
@@ -941,6 +945,7 @@ void replay_log_event (void) {
       M->out = get_peer_id (M->from_id) == our_id;
 
       message_insert (M);
+      tel_new_msg (M, 4);
       #ifdef USE_LUA
         lua_new_msg (M);
       #endif
@@ -979,6 +984,7 @@ void replay_log_event (void) {
       M->out = get_peer_id (M->from_id) == our_id;
 
       message_insert (M);
+      tel_new_msg (M, 5);
       #ifdef USE_LUA
         lua_new_msg (M);
       #endif
@@ -1010,6 +1016,7 @@ void replay_log_event (void) {
       M->service = 1;
 
       message_insert (M);
+      tel_new_msg (M, 6);
       #ifdef USE_LUA
         lua_new_msg (M);
       #endif
@@ -1042,6 +1049,7 @@ void replay_log_event (void) {
       M->service = 1;
 
       message_insert (M);
+      tel_new_msg (M, 7);
       #ifdef USE_LUA
         lua_new_msg (M);
       #endif
@@ -1074,6 +1082,7 @@ void replay_log_event (void) {
       M->service = 1;
 
       message_insert (M);
+      tel_new_msg (M, 8);
       #ifdef USE_LUA
         lua_new_msg (M);
       #endif

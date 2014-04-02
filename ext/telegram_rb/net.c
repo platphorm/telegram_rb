@@ -645,3 +645,47 @@ void dc_create_session (struct dc *DC) {
   assert (!DC->sessions[0]);
   DC->sessions[0] = S;
 }
+
+void connections_send_data(struct pollfd *fds, int max) {
+  if (verbosity >= 10) {
+    logprintf ( "connections_poll_result: max = %d\n", max);
+  }
+  int i;
+  for (i = 0; i < max; i++) {
+    struct connection *c = Connections[fds[i].fd];
+    if (fds[i].revents & (POLLHUP | POLLERR | POLLRDHUP)) {
+      if (verbosity) {
+        logprintf ("fail_connection: events_mask=0x%08x\n", fds[i].revents);
+      }
+      fail_connection (c);
+    } else if (fds[i].revents & POLLOUT) {
+      if (c->state == conn_connecting) {
+        logprintf ("connection ready\n");
+        c->state = conn_ready;
+        c->last_receive_time = get_double_time ();
+      }
+      if (c->out_bytes) {
+        try_write (c);
+      }
+    }
+  }
+}
+
+void connections_recv_data (struct pollfd *fds, int max) {
+  if (verbosity >= 10) {
+    logprintf ( "connections_poll_result: max = %d\n", max);
+  }
+  int i;
+  for (i = 0; i < max; i++) {
+    struct connection *c = Connections[fds[i].fd];
+    if (fds[i].revents & POLLIN) {
+      try_read (c);
+    }
+    if (fds[i].revents & (POLLHUP | POLLERR | POLLRDHUP)) {
+      if (verbosity) {
+        logprintf ("fail_connection: events_mask=0x%08x\n", fds[i].revents);
+      }
+      fail_connection (c);
+    }
+  }
+}

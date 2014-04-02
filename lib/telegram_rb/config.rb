@@ -1,6 +1,6 @@
 require 'json'
 
-module Telegram
+module TelegramRb
   class Config
 
     SCHEMA_FILES = {

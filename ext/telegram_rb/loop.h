@@ -23,4 +23,5 @@ void net_loop (int flags, int (*end)(void));
 void write_auth_file (void);
 void write_state_file (void);
 void write_secret_chat_file (void);
+void net_connection(int flags, int read_write);
 #endif

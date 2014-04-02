@@ -114,6 +114,30 @@ void net_loop (int flags, int (*is_end)(void)) {
   }
 }
 
+void net_connection (int flags, int read_write) {
+  struct pollfd fds[101];
+  int cc = 0;
+  if (flags & 3) {
+    fds[0].fd = 0;
+    fds[0].events = POLLIN;
+    cc ++;
+  }
+
+  int x = connections_make_poll_array (fds + cc, 101 - cc) + cc;
+  double timer = next_timer_in ();
+  if (timer > 1000) { timer = 1000; }
+  if (poll (fds, x, timer) < 0) {
+    work_timers ();
+  }
+  work_timers ();
+  if(read_write == 1){
+    connections_send_data(fds + cc, x - cc);
+  }else{
+    connections_recv_data(fds + cc, x - cc);
+  }
+}
+
+
 char **_s;
 size_t *_l;
 int got_it_ok;
@@ -132,11 +156,11 @@ int is_got_it (void) {
 
 int net_getline (char **s, size_t *l) {
   fflush (stdout);
-//  rl_already_prompted = 1;
+  //  rl_already_prompted = 1;
   got_it_ok = 0;
   _s = s;
   _l = l;
-//  rl_callback_handler_install (0, got_it);
+  //  rl_callback_handler_install (0, got_it);
   net_loop (2, is_got_it);
   return 0;
 }
@@ -144,7 +168,7 @@ int net_getline (char **s, size_t *l) {
 int ret1 (void) { return 0; }
 
 int main_loop (void) {
-  net_loop (1, ret1);
+  //net_loop (1, ret1);
   return 0;
 }
 

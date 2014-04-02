@@ -1,6 +1,6 @@
 require 'type_array'
 
-module Telegram
+module TelegramRb
   class Serialization
     include NumberUtil
 

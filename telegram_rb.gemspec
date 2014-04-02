@@ -5,7 +5,7 @@ require 'telegram_rb/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "telegram_rb"
-  spec.version       = Telegram::VERSION
+  spec.version       = TelegramRb::VERSION
   spec.authors       = ["Jiren Patel"]
   spec.email         = ["jiren@joshsoftware.com"]
   spec.description   = %q{Telegram ruby client}

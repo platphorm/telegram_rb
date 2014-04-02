@@ -1,6 +1,6 @@
 require 'digest'
 
-module Telegram
+module TelegramRb
   module Mtproto
     def aes256_encrypt(key, data)
       key = Digest::SHA256.digest(key) if(key.kind_of?(String) && 32 != key.bytesize)

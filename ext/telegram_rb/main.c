@@ -17,45 +17,7 @@
     Copyright Vitaly Valtman 2013
 */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <pwd.h>
-#include <termios.h>
-#include <unistd.h>
-#include <assert.h>
-#if (READLINE == GNU)
-#include <readline/readline.h>
-#else
-#include <editline/readline.h>
-#endif
-
-#include <sys/stat.h>
-#include <time.h>
-#include <fcntl.h>
-
-#ifdef HAVE_EXECINFO_H
-#include <execinfo.h>
-#endif
-#include <signal.h>
-#ifdef HAVE_LIBCONFIG
-#include <libconfig.h>
-#endif
-
-#include "telegram.h"
-#include "loop.h"
-#include "mtproto-client.h"
-#include "interface.h"
-#include "tools.h"
-
-#ifdef USE_LUA
-#  include "lua-tg.h"
-#endif
+#include "main.h"
 
 #define PROGNAME "telegram-client"
 #define VERSION "0.01"
@@ -476,7 +438,7 @@ void sig_abrt_handler (int signum __attribute__ ((unused))) {
   exit (EXIT_FAILURE);
 }
 
-int main (int argc, char **argv) {
+int telegram_main_org(int argc, char **argv) {
   signal (SIGSEGV, sig_segv_handler);
   signal (SIGABRT, sig_abrt_handler);
 
@@ -503,5 +465,19 @@ int main (int argc, char **argv) {
 
   inner_main ();
   
+  return 0;
+}
+
+int telegram_main(char *pub_key){
+  signal (SIGSEGV, sig_segv_handler);
+  signal (SIGABRT, sig_abrt_handler);
+  //verbosity = 2;
+
+  rsa_public_key_name = pub_key;
+  running_for_first_time ();
+  parse_config ();
+
+  //get_terminal_attributes ();
+  inner_main ();
   return 0;
 }

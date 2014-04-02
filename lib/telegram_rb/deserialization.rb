@@ -1,4 +1,4 @@
-module Telegram
+module TelegramRb
   class Deserialization
 
     attr_accessor :buffer, :offset

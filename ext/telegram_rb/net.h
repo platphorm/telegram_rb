@@ -147,5 +147,9 @@ void dc_create_session (struct dc *DC);
 void insert_msg_id (struct session *S, long long id);
 struct dc *alloc_dc (int id, char *ip, int port);
 
+//FOR API
+void connections_send_data(struct pollfd *fds, int max);
+void connections_recv_data (struct pollfd *fds, int max);
+
 #define GET_DC(c) (c->session->dc)
 #endif

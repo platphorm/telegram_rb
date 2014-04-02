@@ -1,4 +1,4 @@
-module Telegram
+module TelegramRb
   module NumberUtil
 
     def to_byte_array(num)
