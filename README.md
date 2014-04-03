@@ -4,15 +4,6 @@ TODO: Write a gem description
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-    gem 'telegram_rb'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
 
     # Prerequisites
     On ubuntu use:
@@ -42,7 +33,14 @@ Or install it yourself as:
        brew install lua
     
     
-    $ gem install telegram_rb
+Add this line to your application's Gemfile:
+
+    gem 'telegram_rb'
+
+And then execute:
+
+    $ bundle
+    
 
 ## Usage
 
