@@ -18,7 +18,24 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+     # This will init telegram and ask for otp if mobile number is not registerd.
+     Telegram.init
+     
+     # Fetch your contacts
+     Telegram.contact_list
+     
+     # Send message
+     users = Telegram.contact_list
+     user = users.find{|user| user.phone == "1234567890"}
+     Telegram.send_message(user.to_peer, "Hello from TelegramRb #{rand(1000)}")
+     
+     # Receive message implement callback
+     module Telegram
+       def self.receive_message(message)
+         p message.inspect
+       end
+     end
+
 
 ## Contributing
 

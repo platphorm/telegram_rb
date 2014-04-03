@@ -21,3 +21,4 @@ $:.unshift(File.dirname(__FILE__) + '/../lib/')
 SCHEMA_DIR = "#{Dir.pwd}/schema"
 
 require 'telegram_rb'
+require "#{File.dirname(__FILE__)}/telegram_callback" 
