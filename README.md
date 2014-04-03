@@ -14,6 +14,34 @@ And then execute:
 
 Or install it yourself as:
 
+    # Prerequisites
+    On ubuntu use:
+
+       sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev
+    
+    On gentoo:
+
+       sudo emerge -av sys-libs/readline dev-libs/libconfig dev-libs/openssl dev-lang/lua
+
+    On Fedora:
+
+       sudo yum install lua-devel openssl-devel libconfig-devel readline-devel
+
+    On FreeBSD:
+
+       pkg install libconfig libexecinfo lua52
+
+    On OpenBSD:
+
+       pkg_add libconfig libexecinfo lua
+   
+    On OS x 
+        
+       brew install libconfig
+       brew install readline
+       brew install lua
+    
+    
     $ gem install telegram_rb
 
 ## Usage
