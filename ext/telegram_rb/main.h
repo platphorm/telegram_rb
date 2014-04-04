@@ -13,11 +13,6 @@
 #include <termios.h>
 #include <unistd.h>
 #include <assert.h>
-#if (READLINE == GNU)
-#include <readline/readline.h>
-#else
-#include <editline/readline.h>
-#endif
 
 #include <sys/stat.h>
 #include <time.h>

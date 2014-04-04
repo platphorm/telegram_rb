@@ -28,13 +28,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef READLINE_GNU
-#include <readline/readline.h>
-#include <readline/history.h>
-#else
-#include <readline/readline.h>
-#include <readline/history.h>
-#endif
 
 #include <errno.h>
 #include <poll.h>
@@ -622,7 +615,7 @@ int loop (void) {
   read_state_file ();
   read_secret_chat_file ();
 
-  set_interface_callbacks ();
+  //set_interface_callbacks ();
 
   do_get_difference ();
   net_loop (0, dgot);

@@ -53,7 +53,7 @@ VALUE send_msg_rb(VALUE self, VALUE peer, VALUE msg){
   return Qnil;
 }
 
-VALUE recv_msg_rb(VALUE self){
+VALUE poll_msg_rb(VALUE self){
   net_connection(1, 0);
   return Qnil;
 }
@@ -101,7 +101,7 @@ void Init_telegram_ext() {
 
   rb_define_singleton_method(rb_mTelegram, "load_config", load_config, 1);
   rb_define_singleton_method(rb_mTelegram, "send_message", send_msg_rb, 2);
-  rb_define_singleton_method(rb_mTelegram, "recv_messages", recv_msg_rb, 0);
+  rb_define_singleton_method(rb_mTelegram, "poll_messages", poll_msg_rb, 0);
   rb_define_singleton_method(rb_mTelegram, "contact_list", users_list_rb, 0);
 }
 

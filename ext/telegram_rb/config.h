@@ -135,12 +135,6 @@
 /* Use custom prog name */
 /* #undef PROG_NAME */
 
-/* Use libedit */
-#define READLINE_EDIT 1
-
-/* Use gnu libreadline */
-/* #undef READLINE_GNU */
-
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
 

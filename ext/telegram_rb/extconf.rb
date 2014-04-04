@@ -10,7 +10,6 @@ RbConfig::MAKEFILE_CONFIG['CCDLFLAGS'] = ''
 $CFLAGS << " -DHAVE_CONFIG_H -Wall -Wextra -Wno-deprecated-declarations -fno-strict-aliasing -fno-omit-frame-pointer "
 
 have_library('config')
-have_library('readline')
 have_library('z')
 have_library('m')
 have_library('crypto')

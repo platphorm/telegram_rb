@@ -15,13 +15,13 @@ desc 'clean all extension files'
 task :clean_all => :clean do
   begin
     Dir.chdir(Pathname(__FILE__).dirname + "lib") do
-      `rm telegram_rb.#{extension}`
-      `rm telegram_rb.o`
+      `rm telegram_ext.{bundle,jar,so}`
+      `rm telegram_ext.o`
     end
   rescue Exception => e
     puts e.message
   end
 end
 
-task :default => [ :clean_all, :compile, :spec ]
+task :default => [ :clean, :compile, :spec ]
 #task :default => [:spec]

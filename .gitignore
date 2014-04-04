@@ -20,3 +20,6 @@ out
 .DS_Store
 *.swp
 doc
+*.diff
+diff
+1

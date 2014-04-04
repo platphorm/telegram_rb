@@ -6,6 +6,10 @@ module Telegram
       Telegram::PeerId.new(type, id)
     end
 
+    def send_message(message)
+      Telegram.send_message(to_peer, message)
+    end
+
   end
 
 end
