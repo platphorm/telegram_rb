@@ -689,11 +689,8 @@ int get_contacts_on_answer (struct query *q UU) {
   n = fetch_int ();
   for (i = 0; i < n; i++) {
     struct user *U = fetch_alloc_user ();
-    print_start ();
-    push_color (COLOR_YELLOW);
     printf ("User #%d: ", get_peer_id (U->id));
     print_user_name (U->id, (peer_t *)U);
-    push_color (COLOR_GREEN);
     printf (" (");
     printf ("%s", U->print_name);
     if (U->phone) {
@@ -701,7 +698,6 @@ int get_contacts_on_answer (struct query *q UU) {
       printf ("%s", U->phone);
     }
     printf (") ");
-    pop_color ();
     if (U->status.online > 0) {
       printf ("online\n");
     } else {
@@ -713,8 +709,6 @@ int get_contacts_on_answer (struct query *q UU) {
       }
       printf ("\n");
     }
-    pop_color ();
-    print_end ();
   }
   return 0;
 }
@@ -863,13 +857,9 @@ int msg_send_on_answer (struct query *q UU) {
       if (b == CODE_contacts_foreign_link_requested) {
         U->flags |= FLAG_USER_OUT_CONTACT;
       }
-      print_start ();
-      push_color (COLOR_YELLOW);
       printf ("Link with user ");
       print_user_name (U->id, (void *)U);
       printf (" changed\n");
-      pop_color ();
-      print_end ();
     }
   }
   rprintf ("Sent: id = %d\n", id);
@@ -1161,8 +1151,6 @@ int get_dialogs_on_answer (struct query *q UU) {
   for (i = 0; i < n; i++) {
     fetch_alloc_user ();
   }
-  print_start ();
-  push_color (COLOR_YELLOW);
   for (i = dl_size - 1; i >= 0; i--) {
     peer_t *UC;
     switch (get_peer_type (plist[i])) {
@@ -1180,8 +1168,6 @@ int get_dialogs_on_answer (struct query *q UU) {
       break;
     }
   }
-  pop_color ();
-  print_end ();
 
   dialog_list_got = 1;
   return 0;
@@ -1637,8 +1623,6 @@ void do_rename_chat (peer_id_t id, char *name UU) {
 /* {{{ Chat info */
 void print_chat_info (struct chat *C) {
   peer_t *U = (void *)C;
-  print_start ();
-  push_color (COLOR_YELLOW);
   printf ("Chat ");
   print_chat_name (U->id, U);
   printf (" members:\n");
@@ -1655,8 +1639,6 @@ void print_chat_info (struct chat *C) {
     }
     printf ("\n");
   }
-  pop_color ();
-  print_end ();
 }
 
 int chat_info_on_answer (struct query *q UU) {
@@ -1691,8 +1673,6 @@ void do_get_chat_info (peer_id_t id) {
 
 void print_user_info (struct user *U) {
   peer_t *C = (void *)U;
-  print_start ();
-  push_color (COLOR_YELLOW);
   printf ("User ");
   print_user_name (U->id, C);
   printf (":\n");
@@ -1705,8 +1685,6 @@ void print_user_info (struct user *U) {
     print_date_full (U->status.when);
     printf (")\n");
   }
-  pop_color ();
-  print_end ();
 }
 
 int user_info_on_answer (struct query *q UU) {
@@ -2118,11 +2096,8 @@ int add_contact_on_answer (struct query *q UU) {
   n = fetch_int ();
   for (i = 0; i < n ; i++) {
     struct user *U = fetch_alloc_user ();
-    print_start ();
-    push_color (COLOR_YELLOW);
     printf ("User #%d: ", get_peer_id (U->id));
     print_user_name (U->id, (peer_t *)U);
-    push_color (COLOR_GREEN);
     printf (" (");
     printf ("%s", U->print_name);
     if (U->phone) {
@@ -2130,7 +2105,6 @@ int add_contact_on_answer (struct query *q UU) {
       printf ("%s", U->phone);
     }
     printf (") ");
-    pop_color ();
     if (U->status.online > 0) {
       printf ("online\n");
     } else {
@@ -2142,9 +2116,6 @@ int add_contact_on_answer (struct query *q UU) {
       }
       printf ("\n");
     }
-    pop_color ();
-    print_end ();
-
   }
   return 0;
 }
@@ -2212,18 +2183,12 @@ int contacts_search_on_answer (struct query *q UU) {
   }
   assert (fetch_int () == CODE_vector);
   n = fetch_int ();
-  print_start ();
-  push_color (COLOR_YELLOW);
   for (i = 0; i < n; i++) {
     struct user *U = fetch_alloc_user ();
     printf ("User ");
-    push_color  (COLOR_RED);
     printf ("%s %s", U->first_name, U->last_name); 
-    pop_color ();
     printf (". Phone %s\n", U->phone);
   }
-  pop_color ();
-  print_end ();
   return 0;
 }
 
@@ -2245,21 +2210,13 @@ int send_encr_accept_on_answer (struct query *q UU) {
   struct secret_chat *E = fetch_alloc_encrypted_chat ();
 
   if (E->state == sc_ok) {
-    print_start ();
-    push_color (COLOR_YELLOW);
     printf ("Encrypted connection with ");
     print_encr_chat_name (E->id, (void *)E);
     printf (" established\n");
-    pop_color ();
-    print_end ();
   } else {
-    print_start ();
-    push_color (COLOR_YELLOW);
     printf ("Encrypted connection with ");
     print_encr_chat_name (E->id, (void *)E);
     printf (" failed\n");
-    pop_color ();
-    print_end ();
   }
   return 0;
 }
@@ -2267,21 +2224,13 @@ int send_encr_accept_on_answer (struct query *q UU) {
 int send_encr_request_on_answer (struct query *q UU) {
   struct secret_chat *E = fetch_alloc_encrypted_chat ();
   if (E->state == sc_deleted) {
-    print_start ();
-    push_color (COLOR_YELLOW);
     printf ("Encrypted connection with ");
     print_encr_chat_name (E->id, (void *)E);
     printf (" can not be established\n");
-    pop_color ();
-    print_end ();
   } else {
-    print_start ();
-    push_color (COLOR_YELLOW);
     printf ("Establishing connection with ");
     print_encr_chat_name (E->id, (void *)E);
     printf ("\n");
-    pop_color ();
-    print_end ();
 
     assert (E->state == sc_waiting);
   }
@@ -2664,22 +2613,16 @@ void do_visualize_key (peer_id_t id) {
   }
   unsigned char buf[20];
   SHA1 ((void *)P->encr_chat.key, 256, buf);
-  print_start ();
   int i;
   for (i = 0; i < 16; i++) {
     int x = buf[i];
     int j;
     for (j = 0; j < 4; j ++) {    
-      push_color (colors[x & 3]);
-      push_color (COLOR_INVERSE);
       printf ("  ");
-      pop_color ();
-      pop_color ();
       x = x >> 2;
     }
     if (i & 1) { printf ("\n"); }
   }
-  print_end ();
 }
 /* }}} */
 
@@ -2700,16 +2643,12 @@ int get_suggested_on_answer (struct query *q UU) {
   assert (fetch_int () == CODE_vector);
   int m = fetch_int ();
   assert (n == m);
-  print_start ();
-  push_color (COLOR_YELLOW);
   for (i = 0; i < m; i++) {
     peer_t *U = (void *)fetch_alloc_user ();
     assert (get_peer_id (U->id) == l[2 * i]);
     print_user_name (U->id, U);
     printf (" phone %s: %d mutual friends\n", U->user.phone, l[2 * i + 1]);
   }
-  pop_color ();
-  print_end ();
   return 0;
 }
 

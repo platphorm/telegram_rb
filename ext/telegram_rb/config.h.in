@@ -36,15 +36,6 @@
 /* Define to 1 if you have the `z' library (-lz). */
 #undef HAVE_LIBZ
 
-/* Define to 1 if you have the <luaconf.h> header file. */
-#undef HAVE_LUACONF_H
-
-/* Define to 1 if you have the <lualib.h> header file. */
-#undef HAVE_LUALIB_H
-
-/* Define to 1 if you have the <lua.h> header file. */
-#undef HAVE_LUA_H
-
 /* Define to 1 if you have the <mach/mach.h> header file. */
 #undef HAVE_MACH_MACH_H
 
@@ -151,9 +142,6 @@
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
-
-/* use lua */
-#undef USE_LUA
 
 /* Define to `int' if <sys/types.h> doesn't define. */
 #undef gid_t

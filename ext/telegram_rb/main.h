@@ -37,10 +37,6 @@
 #include "interface.h"
 #include "tools.h"
 
-#ifdef USE_LUA
-#  include "lua-tg.h"
-#endif
-
 int telegram_main();
 
 #endif

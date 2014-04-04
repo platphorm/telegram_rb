@@ -6,29 +6,28 @@ This is the first cut of the rubygem for telegram. A lot of the native code here
 
 On ubuntu use:
 
-    sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev
+    sudo apt-get install libreadline-dev libconfig-dev libssl-dev
     
 On gentoo:
 
-    sudo emerge -av sys-libs/readline dev-libs/libconfig dev-libs/openssl dev-lang/lua
+    sudo emerge -av sys-libs/readline dev-libs/libconfig dev-libs/openssl
 
 On Fedora:
 
-    sudo yum install lua-devel openssl-devel libconfig-devel readline-devel
+    sudo yum install openssl-devel libconfig-devel readline-devel
 
 On FreeBSD:
 
-    pkg install libconfig libexecinfo lua52
+    pkg install libconfig libexecinfo
 
 On OpenBSD:
 
-    pkg_add libconfig libexecinfo lua
+    pkg_add libconfig libexecinfo
    
 On OS x 
         
     brew install libconfig
     brew install readline
-    brew install lua
     
 ## Installation 
 
@@ -47,7 +46,7 @@ If while installing you get issues with native compilations, god help you. Here 
 
 1.  `ld: 35 duplicate symbols for architecture x86_64`
     
-    This is probably because of the compiler setting `-fno-common`. Open your rbconfig.rb file. This typically resides inside <RUBY PATH>/lib/ruby/<version>/<architecture>/rbconfig.rb. For example: `~/.rvm/rubies/ruby-2.1.0/lib/ruby/2.1.0/x86_64-darwin13.0/rbconfig.rb`.
+    This is probably because of the compiler setting `-fno-common`. Open your rbconfig.rb file. This typically resides inside `<RUBY PATH>/lib/ruby/<version>/<architecture>/rbconfig.rb`. For example: `~/.rvm/rubies/ruby-2.1.0/lib/ruby/2.1.0/x86_64-darwin13.0/rbconfig.rb`.
     
     In this file, edit `CONFIG["CFLAGS"]` and remove -fno-common
 

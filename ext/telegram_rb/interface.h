@@ -50,10 +50,6 @@ void print_user_name (peer_id_t id, union peer *U);
 void print_encr_chat_name_full (peer_id_t id, peer_t *C);
 void print_encr_chat_name (peer_id_t id, peer_t *C);
 //void print_media (struct message_media *M);
-void pop_color (void);
-void push_color (const char *color);
-void print_start (void);
-void print_end (void);
 void print_date_full (long t);
 void print_date (long t);
 

@@ -255,12 +255,6 @@ void set_prompt (const char *s) {
 
 void update_prompt (void) {
   return;
-  print_start ();
-  set_prompt (get_default_prompt ());
-  if (readline_active) {
-    rl_redisplay ();
-  }
-  print_end ();
 }
 
 char *modifiers[] = {
@@ -868,8 +862,6 @@ void interpreter (char *line UU) {
     }
     do_add_contact (phone, phone_len, first_name, first_name_len, last_name, last_name_len, 1);
   } else if (IS_WORD ("help")) {
-    //print_start ();
-    push_color (COLOR_YELLOW);
     printf (
       "help - prints this help\n"
       "msg <peer> Text - sends message to this peer\n"
@@ -906,7 +898,6 @@ void interpreter (char *line UU) {
       "\talert - enables/disables alert sound notifications\n"
       "chat_with_peer <peer> - starts chat with this peer. Every command after is message to this peer. Type /exit or /quit to end this mode\n"
       );
-    pop_color ();
   } else if (IS_WORD ("show_license")) {
     char *b = 
 #include "LICENSE.h"
@@ -1127,105 +1118,33 @@ void interpreter (char *line UU) {
 
 int readline_active;
 void rprintf (const char *format, ...) {
-  print_start ();
   va_list ap;
   va_start (ap, format);
   vfprintf (stdout, format, ap);
   va_end (ap);
-  print_end();
-}
-
-int saved_point;
-char *saved_line;
-int prompt_was;
-void print_start (void) {
-  return;
-  if (in_readline) { return; }
-  assert (!prompt_was);
-  if (readline_active) {
-    saved_point = rl_point;
-#ifdef READLINE_GNU
-    saved_line = talloc (rl_end + 1);
-    saved_line[rl_end] = 0;
-    memcpy (saved_line, rl_line_buffer, rl_end);
-
-    rl_save_prompt();
-    rl_replace_line("", 0);
-#else
-    assert (rl_end >= 0);
-    saved_line = talloc (rl_end + 1);
-    memcpy (saved_line, rl_line_buffer, rl_end + 1);
-    rl_line_buffer[0] = 0;
-    set_prompt ("");
-#endif
-    rl_redisplay();
-  }
-  prompt_was = 1;
-}
-
-void print_end (void) {
-  return;
-  if (in_readline) { return; }
-  assert (prompt_was);
-  if (readline_active) {
-    set_prompt (get_default_prompt ());
-#if READLINE_GNU
-    rl_replace_line(saved_line, 0);
-#else
-    memcpy (rl_line_buffer, saved_line, rl_end + 1); // not safe, but I hope this would work. 
-#endif
-    rl_point = saved_point;
-    rl_redisplay();
-    tfree_str (saved_line);
-  }
-  prompt_was = 0;
 }
 
 void hexdump (int *in_ptr, int *in_end) {
-  print_start ();
   int *ptr = in_ptr;
   while (ptr < in_end) { printf (" %08x", *(ptr ++)); }
   printf ("\n");
-  print_end (); 
 }
 
+int prompt_was;
 void logprintf (const char *format, ...) {
   int x = 0;
   if (!prompt_was) {
     x = 1;
-    print_start ();
   }
-  printf (COLOR_GREY " *** ");
   va_list ap;
   va_start (ap, format);
   vfprintf (stdout, format, ap);
   va_end (ap);
   printf (COLOR_NORMAL);
-  if (x) {
-    print_end ();
-  }
 }
 
 int color_stack_pos;
 const char *color_stack[10];
-
-void push_color (const char *color) {
-  return;
-  assert (color_stack_pos < 10);
-  color_stack[color_stack_pos ++] = color;
-  printf ("%s", color);
-}
-
-void pop_color (void) {
-  return;
-  assert (color_stack_pos > 0);
-  color_stack_pos --;
-  if (color_stack_pos >= 1) {
-    printf ("%s", color_stack[color_stack_pos - 1]);
-  } else {
-    printf ("%s", COLOR_NORMAL);
-  }
-}
 
 void print_media (struct message_media *M) {
   assert (M);
@@ -1270,9 +1189,7 @@ void print_media (struct message_media *M) {
       return;
     case CODE_message_media_contact:
       printf ("[contact] ");
-      push_color (COLOR_RED);
       printf ("%s %s ", M->first_name, M->last_name);
-      pop_color ();
       printf ("%s", M->phone);
       return;
     case CODE_message_media_unsupported:
@@ -1288,7 +1205,6 @@ int unknown_user_list[1000];
 
 void print_user_name (peer_id_t id, peer_t *U) {
   assert (get_peer_type (id) == PEER_USER);
-  push_color (COLOR_RED);
   if (!U) {
     printf ("user#%d", get_peer_id (id));
     int i;
@@ -1304,9 +1220,6 @@ void print_user_name (peer_id_t id, peer_t *U) {
       unknown_user_list[unknown_user_list_pos ++] = get_peer_id (id);
     }
   } else {
-    if (U->flags & (FLAG_USER_SELF | FLAG_USER_CONTACT)) {
-      push_color (COLOR_REDB);
-    }
     if ((U->flags & FLAG_DELETED)) {
       printf ("deleted user#%d", get_peer_id (id));
     } else if (!(U->flags & FLAG_CREATED)) {
@@ -1318,44 +1231,34 @@ void print_user_name (peer_id_t id, peer_t *U) {
     } else {
       printf ("%s %s", U->user.first_name, U->user.last_name); 
     }
-    if (U->flags & (FLAG_USER_SELF | FLAG_USER_CONTACT)) {
-      pop_color ();
-    }
   }
-  pop_color ();
 }
 
 void print_chat_name (peer_id_t id, peer_t *C) {
   assert (get_peer_type (id) == PEER_CHAT);
-  push_color (COLOR_MAGENTA);
   if (!C) {
     printf ("chat#%d", get_peer_id (id));
   } else {
     printf ("%s", C->chat.title);
   }
-  pop_color ();
 }
 
 void print_encr_chat_name (peer_id_t id, peer_t *C) {
   assert (get_peer_type (id) == PEER_ENCR_CHAT);
-  push_color (COLOR_MAGENTA);
   if (!C) {
     printf ("encr_chat#%d", get_peer_id (id));
   } else {
     printf ("%s", C->print_name);
   }
-  pop_color ();
 }
 
 void print_encr_chat_name_full (peer_id_t id, peer_t *C) {
   assert (get_peer_type (id) == PEER_ENCR_CHAT);
-  push_color (COLOR_MAGENTA);
   if (!C) {
     printf ("encr_chat#%d", get_peer_id (id));
   } else {
     printf ("%s", C->print_name);
   }
-  pop_color ();
 }
 
 static char *monthes[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
@@ -1377,15 +1280,10 @@ int our_id;
 
 void print_service_message (struct message *M) {
   assert (M);
-  print_start ();
-  push_color (COLOR_GREY);
-  
-  push_color (COLOR_MAGENTA);
   if (msg_num_mode) {
     printf ("%lld ", M->id);
   }
   print_date (M->date);
-  pop_color ();
   printf (" ");
   if (get_peer_type (M->to_id) == PEER_CHAT) {
     print_chat_name (M->to_id, user_chat_get (M->to_id));
@@ -1435,8 +1333,6 @@ void print_service_message (struct message *M) {
   default:
     assert (0);
   }
-  pop_color ();
-  print_end ();
 }
 
 peer_id_t last_from_id;
@@ -1460,33 +1356,26 @@ void print_message (struct message *M) {
   last_from_id = M->from_id;
   last_to_id = M->to_id;
 
-  print_start ();
   if (get_peer_type (M->to_id) == PEER_USER) {
     if (M->out) {
-      push_color (COLOR_GREEN);
       if (msg_num_mode) {
         printf ("%lld ", M->id);
       }
       print_date (M->date);
-      pop_color ();
       printf (" ");
       print_user_name (M->to_id, user_chat_get (M->to_id));
-      push_color (COLOR_GREEN);
       if (M->unread) {
         printf (" <<< ");
       } else {
         printf (" ««« ");
       }
     } else {
-      push_color (COLOR_BLUE);
       if (msg_num_mode) {
         printf ("%lld ", M->id);
       }
       print_date (M->date);
-      pop_color ();
       printf (" ");
       print_user_name (M->from_id, user_chat_get (M->from_id));
-      push_color (COLOR_BLUE);
       if (M->unread) {
         printf (" >>> ");
       } else {
@@ -1500,29 +1389,23 @@ void print_message (struct message *M) {
     peer_t *P = user_chat_get (M->to_id);
     assert (P);
     if (M->out) {
-      push_color (COLOR_GREEN);
       if (msg_num_mode) {
         printf ("%lld ", M->id);
       }
       print_date (M->date);
       printf (" ");
-      push_color (COLOR_CYAN);
       printf (" %s", P->print_name);
-      pop_color ();
       if (M->unread) {
         printf (" <<< ");
       } else {
         printf (" ««« ");
       }
     } else {
-      push_color (COLOR_BLUE);
       if (msg_num_mode) {
         printf ("%lld ", M->id);
       }
       print_date (M->date);
-      push_color (COLOR_CYAN);
       printf (" %s", P->print_name);
-      pop_color ();
       if (M->unread) {
         printf (" >>> ");
       } else {
@@ -1534,21 +1417,14 @@ void print_message (struct message *M) {
     }
   } else {
     assert (get_peer_type (M->to_id) == PEER_CHAT);
-    push_color (COLOR_MAGENTA);
     if (msg_num_mode) {
       printf ("%lld ", M->id);
     }
     print_date (M->date);
-    pop_color ();
     printf (" ");
     print_chat_name (M->to_id, user_chat_get (M->to_id));
     printf (" ");
     print_user_name (M->from_id, user_chat_get (M->from_id));
-    if ((get_peer_type (M->from_id) == PEER_USER) && (get_peer_id (M->from_id) == our_id)) {
-      push_color (COLOR_GREEN);
-    } else {
-      push_color (COLOR_BLUE);
-    }
     if (M->unread) {
       printf (" >>> ");
     } else {
@@ -1566,10 +1442,8 @@ void print_message (struct message *M) {
   if (M->media.type != CODE_message_media_empty) {
     print_media (&M->media);
   }
-  pop_color ();
   assert (!color_stack_pos);
   printf ("\n");
-  print_end();
 }
 
 void play_sound (void) {

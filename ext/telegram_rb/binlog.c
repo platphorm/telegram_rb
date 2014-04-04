@@ -21,9 +21,6 @@
 #include "config.h"
 #endif
 
-#ifdef USE_LUA
-# include "lua-tg.h"
-#endif
 #include "telegram_ext.h"
 #include <unistd.h>
 #include <sys/types.h>
@@ -135,9 +132,6 @@ void replay_log_event (void) {
     rptr ++;
     {
       our_id = *(rptr ++);
-      #ifdef USE_LUA
-        lua_our_id (our_id);
-      #endif
     }
     break;
   case LOG_DC_SIGNED:
@@ -294,9 +288,6 @@ void replay_log_event (void) {
       struct secret_chat *U = (void *)user_chat_get (id);
       assert (U);
       U->state = sc_ok;
-      #ifdef USE_LUA
-        lua_secret_chat_created (U);
-      #endif
     }
     break;
   case CODE_binlog_new_user:
@@ -327,9 +318,6 @@ void replay_log_event (void) {
         U->flags |= FLAG_USER_CONTACT;
       }
       
-      #ifdef USE_LUA
-        lua_user_update (U);
-      #endif
     }
     rptr = in_ptr;
     break;
@@ -360,10 +348,6 @@ void replay_log_event (void) {
       assert (U);
       if (U->user.phone) { tfree_str (U->user.phone); }
       U->user.phone = fetch_str_dup ();
-      
-      #ifdef USE_LUA
-        lua_user_update (&U->user);
-      #endif
     }
     rptr = in_ptr;
     break;
@@ -410,10 +394,6 @@ void replay_log_event (void) {
       if (U->user.real_last_name) { tfree_str (U->user.real_last_name); }
       U->user.real_first_name = fetch_str_dup ();
       U->user.real_last_name = fetch_str_dup ();
-      
-      #ifdef USE_LUA
-        lua_user_update (&U->user);
-      #endif
     }
     rptr = in_ptr;
     break;
@@ -614,10 +594,6 @@ void replay_log_event (void) {
       C->version = fetch_int ();
       fetch_data (&C->photo_big, sizeof (struct file_location));
       fetch_data (&C->photo_small, sizeof (struct file_location));
-      
-      #ifdef USE_LUA
-        lua_chat_update (C);
-      #endif
     };
     rptr = in_ptr;
     break;
@@ -644,9 +620,6 @@ void replay_log_event (void) {
       }
       C->print_title = create_print_name (C->id, C->title, 0, 0, 0);
       peer_insert_name ((void *)C);
-      #ifdef USE_LUA
-        lua_chat_update (C);
-      #endif
     };
     rptr = in_ptr;
     break;
@@ -666,9 +639,6 @@ void replay_log_event (void) {
       peer_t *C = user_chat_get (MK_CHAT (*(rptr ++)));
       assert (C && (C->flags & FLAG_CREATED));
       C->chat.date = *(rptr ++);
-      #ifdef USE_LUA
-        lua_chat_update (&C->chat);
-      #endif
     };
     break;
   case CODE_binlog_set_chat_version:
@@ -678,9 +648,6 @@ void replay_log_event (void) {
       assert (C && (C->flags & FLAG_CREATED));
       C->chat.version = *(rptr ++);
       C->chat.users_num = *(rptr ++);
-      #ifdef USE_LUA
-        lua_chat_update (&C->chat);
-      #endif
     };
     break;
   case CODE_binlog_set_chat_admin:
@@ -689,9 +656,6 @@ void replay_log_event (void) {
       peer_t *C = user_chat_get (MK_CHAT (*(rptr ++)));
       assert (C && (C->flags & FLAG_CREATED));
       C->chat.admin_id = *(rptr ++);
-      #ifdef USE_LUA
-        lua_chat_update (&C->chat);
-      #endif
     };
     break;
   case CODE_binlog_set_chat_participants:
@@ -705,9 +669,6 @@ void replay_log_event (void) {
       C->chat.user_list = talloc (12 * C->chat.user_list_size);
       memcpy (C->chat.user_list, rptr, 12 * C->chat.user_list_size);
       rptr += 3 * C->chat.user_list_size;
-      #ifdef USE_LUA
-        lua_chat_update (&C->chat);
-      #endif
     };
     break;
   case CODE_binlog_chat_full_photo:
@@ -747,9 +708,6 @@ void replay_log_event (void) {
       C->user_list[C->user_list_size - 1].inviter_id = inviter;
       C->user_list[C->user_list_size - 1].date = date;
       C->user_list_version = version;
-      #ifdef USE_LUA
-        lua_chat_update (C);
-      #endif
     }
     break;
   case CODE_binlog_del_chat_participant:
@@ -777,9 +735,6 @@ void replay_log_event (void) {
       C->user_list_size --;
       C->user_list = trealloc (C->user_list, 12 * C->user_list_size + 12, 12 * C->user_list_size);
       C->user_list_version = version;
-      #ifdef USE_LUA
-        lua_chat_update (C);
-      #endif
     }
     break;
   case CODE_binlog_create_message_text:
@@ -831,9 +786,6 @@ void replay_log_event (void) {
       }
       
       tel_new_msg (M, 1);
-      #ifdef USE_LUA
-        lua_new_msg (M);
-      #endif
     }
     rptr = in_ptr;
     break;
@@ -870,9 +822,6 @@ void replay_log_event (void) {
 
       message_insert (M);
       tel_new_msg (M, 2);
-      #ifdef USE_LUA
-        lua_new_msg (M);
-      #endif
     }
     rptr = in_ptr;
     break;
@@ -907,9 +856,6 @@ void replay_log_event (void) {
 
       message_insert (M);
       //tel_new_msg (M, 3);
-      #ifdef USE_LUA
-        lua_new_msg (M);
-      #endif
     }
     rptr = in_ptr;
     break;
@@ -946,9 +892,6 @@ void replay_log_event (void) {
 
       message_insert (M);
       tel_new_msg (M, 4);
-      #ifdef USE_LUA
-        lua_new_msg (M);
-      #endif
     }
     rptr = in_ptr;
     break;
@@ -985,9 +928,6 @@ void replay_log_event (void) {
 
       message_insert (M);
       tel_new_msg (M, 5);
-      #ifdef USE_LUA
-        lua_new_msg (M);
-      #endif
     }
     rptr = in_ptr;
     break;
@@ -1017,9 +957,6 @@ void replay_log_event (void) {
 
       message_insert (M);
       tel_new_msg (M, 6);
-      #ifdef USE_LUA
-        lua_new_msg (M);
-      #endif
     }
     rptr = in_ptr;
     break;
@@ -1050,9 +987,6 @@ void replay_log_event (void) {
 
       message_insert (M);
       tel_new_msg (M, 7);
-      #ifdef USE_LUA
-        lua_new_msg (M);
-      #endif
     }
     rptr = in_ptr;
     break;
@@ -1083,9 +1017,6 @@ void replay_log_event (void) {
 
       message_insert (M);
       tel_new_msg (M, 8);
-      #ifdef USE_LUA
-        lua_new_msg (M);
-      #endif
     }
     rptr = in_ptr;
     break;

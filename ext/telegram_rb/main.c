@@ -323,7 +323,6 @@ void usage (void) {
   printf (" -B                 enable binlog\n");
   printf (" -E                 disable auto accept\n");
   printf (" -w                 allow weak random\n");
-  printf (" -s                 specify lua script\n");
   printf (" -W                 wait dialog list\n");
   printf ("\n");
 
@@ -340,8 +339,6 @@ FILE *log_net_f;
 int register_mode;
 int disable_auto_accept;
 int wait_dialog_list;
-
-char *lua_file;
 
 void args_parse (int argc, char **argv) {
   int opt = 0;
@@ -391,9 +388,6 @@ void args_parse (int argc, char **argv) {
       break;
     case 'w':
       allow_weak_random = 1;
-      break;
-    case 's':
-      lua_file = tstrdup (optarg);
       break;
     case 'W':
       wait_dialog_list = 1;
@@ -456,12 +450,6 @@ int telegram_main_org(int argc, char **argv) {
 
 
   get_terminal_attributes ();
-
-  #ifdef USE_LUA
-  if (lua_file) {
-    lua_init (lua_file);
-  }
-  #endif
 
   inner_main ();
   
