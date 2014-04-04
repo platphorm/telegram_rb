@@ -6,15 +6,15 @@ This is the first cut of the rubygem for telegram. A lot of the native code here
 
 On ubuntu use:
 
-    sudo apt-get install libreadline-dev libconfig-dev libssl-dev
+    sudo apt-get install libconfig-dev libssl-dev
     
 On gentoo:
 
-    sudo emerge -av sys-libs/readline dev-libs/libconfig dev-libs/openssl
+    sudo emerge -av dev-libs/libconfig dev-libs/openssl
 
 On Fedora:
 
-    sudo yum install openssl-devel libconfig-devel readline-devel
+    sudo yum install openssl-devel libconfig-devel 
 
 On FreeBSD:
 
@@ -27,7 +27,6 @@ On OpenBSD:
 On OS x 
         
     brew install libconfig
-    brew install readline
     
 ## Installation 
 
