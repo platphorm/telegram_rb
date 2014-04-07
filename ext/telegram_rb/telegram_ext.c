@@ -88,6 +88,13 @@ VALUE users_list_rb(VALUE self){
   return users;
 }
 
+VALUE add_contact_rb(VALUE self, VALUE phone, VALUE first_name, VALUE last_name, VALUE force){
+
+  do_add_contact(RSTRING_PTR(phone), RSTRING_LEN(phone), RSTRING_PTR(first_name), RSTRING_LEN(first_name), RSTRING_PTR(last_name), RSTRING_LEN(last_name), RSTRING_PTR(force));
+
+  return Qnil;
+}
+
 void Init_telegram_ext() {
   ID sym_telegram = rb_intern("Telegram");
   ID sym_peer_id = rb_intern("PeerId");
@@ -103,6 +110,7 @@ void Init_telegram_ext() {
   rb_define_singleton_method(rb_mTelegram, "send_message", send_msg_rb, 2);
   rb_define_singleton_method(rb_mTelegram, "poll_messages", poll_msg_rb, 0);
   rb_define_singleton_method(rb_mTelegram, "contact_list", users_list_rb, 0);
+  rb_define_singleton_method(rb_mTelegram, "add_contact", add_contact_rb, 4);
 }
 
 
