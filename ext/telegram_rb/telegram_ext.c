@@ -90,7 +90,7 @@ VALUE users_list_rb(VALUE self){
 
 VALUE add_contact_rb(VALUE self, VALUE phone, VALUE first_name, VALUE last_name, VALUE force){
 
-  do_add_contact(RSTRING_PTR(phone), RSTRING_LEN(phone), RSTRING_PTR(first_name), RSTRING_LEN(first_name), RSTRING_PTR(last_name), RSTRING_LEN(last_name), RSTRING_PTR(force));
+  do_add_contact(RSTRING_PTR(phone), RSTRING_LEN(phone), RSTRING_PTR(first_name), RSTRING_LEN(first_name), RSTRING_PTR(last_name), RSTRING_LEN(last_name), FIX2INT(force));
 
   return Qnil;
 }
