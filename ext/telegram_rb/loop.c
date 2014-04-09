@@ -93,7 +93,6 @@ void net_loop (int flags, int (*is_end)(void)) {
     connections_poll_result (fds + cc, x - cc);
     if (safe_quit && !queries_num) {
       printf ("All done. Exit\n");
-      rl_callback_handler_remove ();
       exit (0);
     }
     if (unknown_user_list_pos) {
