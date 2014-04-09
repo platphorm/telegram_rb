@@ -478,7 +478,6 @@ int loop (void) {
   } else {
     read_auth_file ();
   }
-  update_prompt ();
 
   assert (DC_list[dc_working_num]);
   if (!DC_working || !DC_working->auth_key_id) {
@@ -614,8 +613,6 @@ int loop (void) {
 
   read_state_file ();
   read_secret_chat_file ();
-
-  //set_interface_callbacks ();
 
   do_get_difference ();
   net_loop (0, dgot);

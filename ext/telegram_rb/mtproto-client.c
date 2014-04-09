@@ -912,7 +912,6 @@ void work_update (struct connection *c UU, long long msg_id UU) {
       fetch_pts ();
       unread_messages ++;
       print_message (M);
-      update_prompt ();
       break;
     };
   case CODE_update_message_i_d:
@@ -1194,7 +1193,6 @@ void work_update (struct connection *c UU, long long msg_id UU) {
       struct message *M = fetch_alloc_geo_message ();
       unread_messages ++;
       print_message (M);
-      update_prompt ();
     }
     break;
   case CODE_update_new_encrypted_message:
@@ -1202,7 +1200,6 @@ void work_update (struct connection *c UU, long long msg_id UU) {
       struct message *M = fetch_alloc_encrypted_message ();
       unread_messages ++;
       print_message (M);
-      update_prompt ();
       fetch_qts ();
     }
     break;
@@ -1384,7 +1381,6 @@ void work_update_short_message (struct connection *c UU, long long msg_id UU) {
   struct message *M = fetch_alloc_message_short ();  
   unread_messages ++;
   print_message (M);
-  update_prompt ();
   if (M->date > last_date) {
     last_date = M->date;
   }
@@ -1395,7 +1391,6 @@ void work_update_short_chat_message (struct connection *c UU, long long msg_id U
   struct message *M = fetch_alloc_message_short_chat ();  
   unread_messages ++;
   print_message (M);
-  update_prompt ();
   if (M->date > last_date) {
     last_date = M->date;
   }

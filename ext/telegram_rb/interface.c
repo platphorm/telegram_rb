@@ -201,10 +201,6 @@ peer_id_t next_token_peer (void) {
   }
 }
 
-void update_prompt (void) {
-  return;
-}
-
 char *modifiers[] = {
   "[offline]",
   0

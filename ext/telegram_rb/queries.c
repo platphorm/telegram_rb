@@ -1333,12 +1333,10 @@ void send_part (struct send_file *f) {
     } else {
       assert (f->part_size == x);
     }
-    update_prompt ();
     send_query (DC_working, packet_ptr - packet_buffer, packet_buffer, &send_file_part_methods, f);
   } else {
     cur_uploaded_bytes -= f->size;
     cur_uploading_bytes -= f->size;
-    update_prompt ();
     clear_packet ();
     assert (f->media_type == CODE_input_media_uploaded_photo || f->media_type == CODE_input_media_uploaded_video || f->media_type == CODE_input_media_uploaded_thumb_video || f->media_type == CODE_input_media_uploaded_audio || f->media_type == CODE_input_media_uploaded_document || f->media_type == CODE_input_media_uploaded_thumb_document);
     if (!f->encr) {
@@ -1775,7 +1773,6 @@ struct download {
 void end_load (struct download *D) {
   cur_downloading_bytes -= D->size;
   cur_downloaded_bytes -= D->size;
-  update_prompt ();
   close (D->fd);
   if (D->next == 1) {
     logprintf ("Done: %s\n", D->name);
@@ -1811,7 +1808,6 @@ int download_on_answer (struct query *q) {
   int len = prefetch_strlen ();
   assert (len >= 0);
   cur_downloaded_bytes += len;
-  update_prompt ();
   if (D->iv) {
     unsigned char *ptr = (void *)fetch_str (len);
     assert (!(len & 15));
@@ -1868,7 +1864,6 @@ void load_next_part (struct download *D) {
     
     cur_downloading_bytes += D->size;
     cur_downloaded_bytes += D->offset;
-    update_prompt ();
   }
   clear_packet ();
   out_int (CODE_upload_get_file);

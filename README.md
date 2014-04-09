@@ -81,12 +81,16 @@ users = Telegram.contact_list
 user = users.find{|user| user.phone == "1234567890"}
 Telegram.send_message(user.to_peer, "Hello from TelegramRb #{rand(1000)}")
      
-# Receive message implement callback
+# Receive message callback
 module Telegram
   def self.receive_message(message)
     p message.inspect
   end
 end
+
+# Poll messages: this will get messages and call `receive_message` method
+Telegram.poll_messages
+
 ```
 
 ## Contributing
