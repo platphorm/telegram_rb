@@ -22,7 +22,6 @@
 #endif
 
 #define _GNU_SOURCE
-#define READLINE_CALLBACKS
 
 #include <assert.h>
 #include <stdio.h>
@@ -44,6 +43,7 @@
 #include "telegram.h"
 #include "loop.h"
 #include "binlog.h"
+#include "main.h"
 
 extern char *default_username;
 extern char *auth_token;
@@ -61,36 +61,32 @@ extern int queries_num;
 int unread_messages;
 void got_it (char *line, int len);
 void net_loop (int flags, int (*is_end)(void)) {
-  while (!is_end ()) {
-    struct pollfd fds[101];
-    int cc = 0;
-    if (flags & 3) {
-      fds[0].fd = 0;
-      fds[0].events = POLLIN;
-      cc ++;
-    }
+  struct pollfd fds[100];
+  int x;
+  double timer;
+  char *line = 0;        
+  size_t len = 0;
 
+  while (!is_end ()) {
     write_state_file ();
-    int x = connections_make_poll_array (fds + cc, 101 - cc) + cc;
-    double timer = next_timer_in ();
+    x = connections_make_poll_array (fds, 100);
+    timer = next_timer_in ();
     if (timer > 1000) { timer = 1000; }
     if (poll (fds, x, timer) < 0) {
       work_timers ();
       continue;
     }
     work_timers ();
-    if ((flags & 3) && (fds[0].revents & POLLIN)) {
-      unread_messages = 0;
-      if (flags & 1) {
-        rl_callback_read_char ();
-      } else {
-        char *line = 0;        
-        size_t len = 0;
-        assert (getline (&line, &len, stdin) >= 0);
-        got_it (line, strlen (line));
-      }
+    
+    if(flags == 1){
+      poll_messages_queue();
+    }else if(flags == 2){
+      assert (getline (&line, &len, stdin) >= 0);
+      got_it (line, strlen (line));
     }
-    connections_poll_result (fds + cc, x - cc);
+
+    connections_poll_result (fds, x);
+
     if (safe_quit && !queries_num) {
       printf ("All done. Exit\n");
       exit (0);
@@ -156,7 +152,7 @@ int net_getline (char **s, size_t *l) {
 int ret1 (void) { return 0; }
 
 int main_loop (void) {
-  //net_loop (1, ret1);
+  net_loop (1, ret1);
   return 0;
 }
 
@@ -462,7 +458,6 @@ int dlgot (void) {
   return dialog_list_got;
 }
 
-int readline_active;
 int new_dc_num;
 int wait_dialog_list;
 
@@ -624,6 +619,7 @@ int loop (void) {
     net_loop (0, dlgot);
   }
 
-  return main_loop ();
+  //return main_loop ();
+  return 1;
 }
 

@@ -66,6 +66,9 @@ static struct termios term_in, term_out;
 static int term_set_in;
 static int term_set_out;
 
+/* Quit */
+extern int safe_quit;
+
 void get_terminal_attributes (void) {
   if (tcgetattr (STDIN_FILENO, &term_in) < 0) {
   } else {
@@ -415,7 +418,7 @@ void print_backtrace (void) {
 #endif
 
 void sig_segv_handler (int signum __attribute__ ((unused))) {
-  set_terminal_attributes ();
+  //set_terminal_attributes ();
   if (write (1, "SIGSEGV received\n", 18) < 0) { 
     // Sad thing
   }
@@ -424,12 +427,17 @@ void sig_segv_handler (int signum __attribute__ ((unused))) {
 }
 
 void sig_abrt_handler (int signum __attribute__ ((unused))) {
-  set_terminal_attributes ();
+  //set_terminal_attributes ();
   if (write (1, "SIGABRT received\n", 18) < 0) { 
     // Sad thing
   }
   print_backtrace ();
   exit (EXIT_FAILURE);
+}
+
+void sig_term_handler (int signum __attribute__ ((unused))) {
+  safe_quit = 1;
+  exit (0);
 }
 
 int telegram_main_org(int argc, char **argv) {
@@ -457,8 +465,9 @@ int telegram_main_org(int argc, char **argv) {
 }
 
 int telegram_main(char *pub_key){
-  //signal (SIGSEGV, sig_segv_handler);
-  //signal (SIGABRT, sig_abrt_handler);
+  signal (SIGSEGV, sig_segv_handler);
+  signal (SIGABRT, sig_abrt_handler);
+  signal(SIGINT, sig_term_handler);
   //verbosity = 2;
 
   rsa_public_key_name = pub_key;

@@ -31,6 +31,7 @@
 #include "mtproto-client.h"
 #include "interface.h"
 #include "tools.h"
+#include "constants.h"
 
 int telegram_main();
 
