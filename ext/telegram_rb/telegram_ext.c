@@ -27,6 +27,15 @@ VALUE build_peer_rb_obj(peer_id_t peer){
   return rb_class_new_instance(2, argv, rb_cPeerId);
 }
 
+peer_id_t peer_rb_to_cstruct(VALUE peer) {
+  peer_id_t peer_cs;
+
+  peer_cs.id = FIX2INT(rb_iv_get(peer, "@id"));
+  peer_cs.type = FIX2INT(rb_iv_get(peer, "@type"));
+
+  return peer_cs;
+}
+
 void tel_new_msg(struct message *M, int fn){
   VALUE argv[0];
   VALUE msg = rb_class_new_instance(0, argv, rb_cMessage);
@@ -38,7 +47,7 @@ void tel_new_msg(struct message *M, int fn){
   rb_iv_set(msg, "@from_id", build_peer_rb_obj(M->from_id));
   rb_iv_set(msg, "@to_id", build_peer_rb_obj(M->to_id));
 
-  printf("Funtion number: %d", fn);
+  //printf("Funtion number: %d", fn);
   rb_funcall(rb_mTelegram, sym_recv_msg, 1, msg);
 }
 
@@ -112,6 +121,15 @@ VALUE add_contact_rb(VALUE self, VALUE phone, VALUE first_name, VALUE last_name,
   return Qnil;
 }
 
+VALUE mark_message_as_read(VALUE self) {
+  peer_id_t peer;
+
+  peer = peer_rb_to_cstruct(rb_iv_get(self, "@from_id"));
+  do_messages_mark_read(peer, FIX2INT(rb_iv_get(self, "@id")) );
+
+  return Qtrue;  
+}
+
 void poll_messages_queue(){
   rb_funcall(rb_mTelegram, sym_poll_queue, 0);
 }
@@ -139,6 +157,9 @@ void Init_telegram_ext() {
   rb_define_singleton_method(rb_mTelegram, "contact_list", users_list_rb, 0);
   rb_define_singleton_method(rb_mTelegram, "add_contact", add_contact_rb, 4);
   rb_define_singleton_method(rb_mTelegram, "start", start_loop_rb, 0);
+
+  rb_define_method(rb_cMessage, "mark_read", mark_message_as_read, 0);
+  
 }
 
 
