@@ -16,6 +16,7 @@ module TelegramRb
     class << self
 
       SCHEMA_FILES.each{|k, _| attr_accessor k}
+      attr_accessor :download_folder
 
       def load(dir)
         SCHEMA_FILES.each do |k, file_name|
@@ -23,6 +24,7 @@ module TelegramRb
           self.send("#{k}=", JSON.parse(IO.read(file)))
         end
       end
+
 
     end
   end

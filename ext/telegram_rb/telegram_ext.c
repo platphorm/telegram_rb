@@ -4,16 +4,18 @@
 static VALUE rb_mTelegram;
 static VALUE rb_cPeerId;
 static VALUE rb_cMessage;
+static VALUE rb_cPhoto;
 static VALUE rb_cUser;
 static ID sym_recv_msg;
 static ID sym_poll_queue;
 extern peer_t *Peers[];
 extern int peer_num;
 
-static VALUE load_config(VALUE self, VALUE pub_key){
+static VALUE load_config(VALUE self, VALUE pub_key, VALUE telegram_dir){
   Check_Type(pub_key, T_STRING);
+  Check_Type(telegram_dir, T_STRING);
 
-  telegram_main(RSTRING_PTR(pub_key));
+  telegram_main(RSTRING_PTR(pub_key), RSTRING_PTR(telegram_dir));
 
   return Qtrue;
 }
@@ -36,9 +38,38 @@ peer_id_t peer_rb_to_cstruct(VALUE peer) {
   return peer_cs;
 }
 
+VALUE build_photo_rb_obj(struct photo *photo, int next){
+  VALUE argv[0];
+  VALUE rb_photo = rb_class_new_instance(0, argv, rb_cPhoto); 
+  int max = -1;
+  int maxi = 0;
+  int i;
+
+  for (i = 0; i < photo->sizes_num; i++) {
+    if (photo->sizes[i].w + photo->sizes[i].h > max) {
+      max = photo->sizes[i].w + photo->sizes[i].h;
+      maxi = i;
+    }
+  }
+
+  rb_iv_set(rb_photo, "@w", INT2FIX(photo->sizes[maxi].w));
+  rb_iv_set(rb_photo, "@h", INT2FIX(photo->sizes[maxi].h));
+  rb_iv_set(rb_photo, "@volume", LL2NUM(photo->sizes[maxi].loc.volume));
+  rb_iv_set(rb_photo, "@local_id", INT2FIX(photo->sizes[maxi].loc.local_id));
+  rb_iv_set(rb_photo, "@size", INT2FIX(photo->sizes[maxi].size));
+
+  return rb_photo;
+}
+
 void tel_new_msg(struct message *M, int fn){
+
+  if (M->out){
+    return;
+  }
+
   VALUE argv[0];
   VALUE msg = rb_class_new_instance(0, argv, rb_cMessage);
+  int media_type;
 
   rb_iv_set(msg, "@id", LONG2NUM(M->id));
   rb_iv_set(msg, "@flags", INT2FIX(M->flags));
@@ -47,7 +78,35 @@ void tel_new_msg(struct message *M, int fn){
   rb_iv_set(msg, "@from_id", build_peer_rb_obj(M->from_id));
   rb_iv_set(msg, "@to_id", build_peer_rb_obj(M->to_id));
 
-  //printf("Funtion number: %d", fn);
+  switch (M->media.type) {
+  case CODE_message_media_empty:
+    media_type = 1;
+    break;
+  case CODE_message_media_photo:
+    media_type = 2;
+    do_load_photo (&M->media.photo, 1);
+    rb_iv_set(msg, "@media", build_photo_rb_obj(&M->media.photo, 1));
+    break;
+  case CODE_message_media_video:
+    media_type = 3;
+    break;
+  case CODE_message_media_audio:
+    media_type = 4;
+    break;
+  case CODE_message_media_document:
+    media_type = 5;
+    break;
+  case CODE_message_media_geo:
+    media_type = 6;
+    break;
+  case CODE_message_media_contact:
+    media_type = 7;
+    break;
+  }
+
+  rb_iv_set(msg, "@media_type", INT2FIX(media_type));
+
+  //printf("****** Funtion number: %d \n ", fn);
   rb_funcall(rb_mTelegram, sym_recv_msg, 1, msg);
 }
 
@@ -125,7 +184,8 @@ VALUE mark_message_as_read(VALUE self) {
   peer_id_t peer;
 
   peer = peer_rb_to_cstruct(rb_iv_get(self, "@from_id"));
-  do_messages_mark_read(peer, FIX2INT(rb_iv_get(self, "@id")) );
+  //do_messages_mark_read(peer, FIX2INT(rb_iv_get(self, "@id")) );
+  do_messages_mark_read(peer, NUM2LL(rb_iv_get(self, "@id")) );
 
   return Qtrue;  
 }
@@ -143,6 +203,7 @@ void Init_telegram_ext() {
   ID sym_peer_id = rb_intern("PeerId");
   ID sym_message = rb_intern("Message");
   ID sym_user = rb_intern("User");
+  ID sym_photo = rb_intern("Photo");
   sym_recv_msg = rb_intern("receive_message");
   sym_poll_queue = rb_intern("poll_messages_queue");
 
@@ -150,8 +211,9 @@ void Init_telegram_ext() {
   rb_cPeerId = rb_const_get(rb_mTelegram, sym_peer_id);
   rb_cMessage = rb_const_get(rb_mTelegram, sym_message);
   rb_cUser = rb_const_get(rb_mTelegram, sym_user);
+  rb_cPhoto = rb_const_get(rb_mTelegram, sym_photo);
 
-  rb_define_singleton_method(rb_mTelegram, "load_config", load_config, 1);
+  rb_define_singleton_method(rb_mTelegram, "load_config", load_config, 2);
   rb_define_singleton_method(rb_mTelegram, "send_message", send_msg_rb, 3);
   rb_define_singleton_method(rb_mTelegram, "poll_messages", poll_msg_rb, 0);
   rb_define_singleton_method(rb_mTelegram, "contact_list", users_list_rb, 0);

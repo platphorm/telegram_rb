@@ -52,6 +52,7 @@ int binlog_enabled;
 extern int log_level;
 int sync_from_start;
 int allow_weak_random;
+char *telegram_directory_path;
 
 void set_default_username (const char *s) {
   if (default_username) { 
@@ -95,6 +96,12 @@ void set_terminal_attributes (void) {
 /* }}} */
 
 char *get_home_directory (void) {
+  if (telegram_directory_path == NULL){
+    telegram_directory_path = tstrdup(".");
+  }
+  return telegram_directory_path;
+
+  /*
   static char *home_directory = NULL;
   if (home_directory != NULL) {
     return home_directory;
@@ -114,6 +121,7 @@ char *get_home_directory (void) {
     home_directory = tstrdup (".");
   }
   return home_directory;
+  */
 }
 
 char *get_config_directory (void) {
@@ -464,13 +472,14 @@ int telegram_main_org(int argc, char **argv) {
   return 0;
 }
 
-int telegram_main(char *pub_key){
+int telegram_main(char *pub_key, char *tel_dir){
   signal (SIGSEGV, sig_segv_handler);
   signal (SIGABRT, sig_abrt_handler);
   signal(SIGINT, sig_term_handler);
   //verbosity = 2;
 
   rsa_public_key_name = pub_key;
+  telegram_directory_path = tel_dir;
   running_for_first_time ();
   parse_config ();
 

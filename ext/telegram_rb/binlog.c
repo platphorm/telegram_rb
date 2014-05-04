@@ -855,7 +855,8 @@ void replay_log_event (void) {
       M->out = get_peer_id (M->from_id) == our_id;
 
       message_insert (M);
-      //tel_new_msg (M, 3);
+      
+      tel_new_msg (M, 3);
     }
     rptr = in_ptr;
     break;
