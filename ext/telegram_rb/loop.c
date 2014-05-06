@@ -79,6 +79,7 @@ void net_loop (int flags, int (*is_end)(void)) {
     work_timers ();
     
     if(flags == 1){
+      unread_messages = 0;
       poll_messages_queue();
     }else if(flags == 2){
       assert (getline (&line, &len, stdin) >= 0);
