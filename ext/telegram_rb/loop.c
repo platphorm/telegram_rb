@@ -613,12 +613,13 @@ int loop (void) {
   net_loop (0, dgot);
   send_all_unsent ();
 
-
+/*
   do_get_dialog_list ();
   if (wait_dialog_list) {
     dialog_list_got = 0;
     net_loop (0, dlgot);
   }
+*/
 
   //return main_loop ();
   return 1;
