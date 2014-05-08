@@ -127,6 +127,7 @@ VALUE send_msg_rb(VALUE self, VALUE peer, VALUE msg_or_file, VALUE type){
     do_send_message (c_peer, RSTRING_PTR(msg_or_file), RSTRING_LEN(msg_or_file));
   }else if(c_type == 2){
     do_send_photo (CODE_input_media_uploaded_photo, c_peer, RSTRING_PTR(msg_or_file));
+  //}else if(c_type == 3 || c_type == 4){
   }else if(c_type == 3){
     do_send_photo (CODE_input_media_uploaded_video, c_peer, RSTRING_PTR(msg_or_file));
   }else{
