@@ -114,22 +114,25 @@ void tel_new_msg(struct message *M, int fn){
 VALUE send_msg_rb(VALUE self, VALUE peer, VALUE msg_or_file, VALUE type){
   peer_id_t c_peer;
   int c_type;
+  char *msg;
 
   if(!msg_or_file){
     return Qfalse;
   }
+
+  msg = tstrdup(RSTRING_PTR(msg_or_file)); 
 
   c_peer.id = FIX2INT(rb_iv_get(peer, "@id"));
   c_peer.type = FIX2INT(rb_iv_get(peer, "@type"));
   c_type = NUM2INT(type); 
 
   if(c_type == 1){
-    do_send_message (c_peer, RSTRING_PTR(msg_or_file), RSTRING_LEN(msg_or_file));
+    do_send_message (c_peer, msg, RSTRING_LEN(msg_or_file));
   }else if(c_type == 2){
-    do_send_photo (CODE_input_media_uploaded_photo, c_peer, RSTRING_PTR(msg_or_file));
+    do_send_photo (CODE_input_media_uploaded_photo, c_peer, msg);
   //}else if(c_type == 3 || c_type == 4){
   }else if(c_type == 3){
-    do_send_photo (CODE_input_media_uploaded_video, c_peer, RSTRING_PTR(msg_or_file));
+    do_send_photo (CODE_input_media_uploaded_video, c_peer, msg);
   }else{
     return Qfalse;
   }
