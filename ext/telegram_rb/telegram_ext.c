@@ -194,6 +194,11 @@ VALUE mark_message_as_read(VALUE self) {
   return Qtrue;  
 }
 
+VALUE forword_message(VALUE self, VALUE to_peer, VALUE msg_id){
+  do_forward_message(peer_rb_to_cstruct(to_peer), NUM2INT(msg_id)); 
+  return Qtrue;
+}
+
 void poll_messages_queue(){
   rb_funcall(rb_mTelegram, sym_poll_queue, 0);
 }
@@ -223,6 +228,7 @@ void Init_telegram_ext() {
   rb_define_singleton_method(rb_mTelegram, "contact_list", users_list_rb, 0);
   rb_define_singleton_method(rb_mTelegram, "add_contact", add_contact_rb, 4);
   rb_define_singleton_method(rb_mTelegram, "start", start_loop_rb, 0);
+  rb_define_singleton_method(rb_mTelegram, "forword_message", forword_message, 2);
 
   rb_define_method(rb_cMessage, "mark_read", mark_message_as_read, 0);
   
