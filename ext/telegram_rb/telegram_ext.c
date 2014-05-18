@@ -3,9 +3,11 @@
 
 static VALUE rb_mTelegram;
 static VALUE rb_cPeerId;
+static VALUE rb_cUser;
 static VALUE rb_cMessage;
 static VALUE rb_cPhoto;
-static VALUE rb_cUser;
+static VALUE rb_cAudio;
+static VALUE rb_cVideo;
 static ID sym_recv_msg;
 static ID sym_poll_queue;
 extern peer_t *Peers[];
@@ -61,6 +63,30 @@ VALUE build_photo_rb_obj(struct photo *photo, int next){
   return rb_photo;
 }
 
+VALUE build_audio_rb_obj(struct audio *audio, int next){
+  VALUE argv[0];
+  VALUE rb_audio = rb_class_new_instance(0, argv, rb_cAudio); 
+
+  rb_iv_set(rb_audio, "@id", LL2NUM(audio->id));
+  rb_iv_set(rb_audio, "@size", INT2FIX(audio->size));
+  rb_iv_set(rb_audio, "@duration", INT2FIX(audio->duration));
+
+  return rb_audio;
+}
+
+VALUE build_video_rb_obj(struct video *video, int next){
+  VALUE argv[0];
+  VALUE rb_video = rb_class_new_instance(0, argv, rb_cVideo); 
+
+  rb_iv_set(rb_video, "@id", LL2NUM(video->id));
+  rb_iv_set(rb_video, "@w", INT2FIX(video->w));
+  rb_iv_set(rb_video, "@h", INT2FIX(video->h));
+  rb_iv_set(rb_video, "@size", INT2FIX(video->size));
+  rb_iv_set(rb_video, "@duration", INT2FIX(video->duration));
+
+  return rb_video;
+}
+
 void tel_new_msg(struct message *M, int fn){
 
   if (M->out){
@@ -87,11 +113,15 @@ void tel_new_msg(struct message *M, int fn){
     do_load_photo (&M->media.photo, 1);
     rb_iv_set(msg, "@media", build_photo_rb_obj(&M->media.photo, 1));
     break;
-  case CODE_message_media_video:
-    media_type = 3;
-    break;
   case CODE_message_media_audio:
+    media_type = 3;
+    do_load_audio(&M->media.audio, 1);
+    rb_iv_set(msg, "@media", build_audio_rb_obj(&M->media.audio, 1));
+    break;
+  case CODE_message_media_video:
     media_type = 4;
+    do_load_video(&M->media.video, 1);
+    rb_iv_set(msg, "@media", build_video_rb_obj(&M->media.video, 1));
     break;
   case CODE_message_media_document:
     media_type = 5;
@@ -132,7 +162,11 @@ VALUE send_msg_rb(VALUE self, VALUE peer, VALUE msg_or_file, VALUE type){
     do_send_photo (CODE_input_media_uploaded_photo, c_peer, msg);
   //}else if(c_type == 3 || c_type == 4){
   }else if(c_type == 3){
+    do_send_photo (CODE_input_media_uploaded_audio, c_peer, msg);
+  }else if(c_type == 4){
     do_send_photo (CODE_input_media_uploaded_video, c_peer, msg);
+  }else if(c_type == 5){
+    do_send_photo (CODE_input_media_uploaded_document, c_peer, msg);
   }else{
     return Qfalse;
   }
@@ -213,6 +247,8 @@ void Init_telegram_ext() {
   ID sym_message = rb_intern("Message");
   ID sym_user = rb_intern("User");
   ID sym_photo = rb_intern("Photo");
+  ID sym_audio = rb_intern("Audio");
+  ID sym_video = rb_intern("Video");
   sym_recv_msg = rb_intern("receive_message");
   sym_poll_queue = rb_intern("poll_messages_queue");
 
@@ -221,6 +257,8 @@ void Init_telegram_ext() {
   rb_cMessage = rb_const_get(rb_mTelegram, sym_message);
   rb_cUser = rb_const_get(rb_mTelegram, sym_user);
   rb_cPhoto = rb_const_get(rb_mTelegram, sym_photo);
+  rb_cAudio = rb_const_get(rb_mTelegram, sym_audio);
+  rb_cVideo = rb_const_get(rb_mTelegram, sym_video);
 
   rb_define_singleton_method(rb_mTelegram, "load_config", load_config, 2);
   rb_define_singleton_method(rb_mTelegram, "send_message", send_msg_rb, 3);
