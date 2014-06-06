@@ -599,6 +599,10 @@ int loop (void) {
     }
   }
 
+  if(auth_state == 300){
+    sign_in_ok = 1;
+  }
+
   for (i = 0; i <= MAX_DC_NUM; i++) if (DC_list[i] && !DC_list[i]->has_auth) {
     do_export_auth (i);
     do_import_auth (i);
