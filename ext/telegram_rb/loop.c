@@ -80,7 +80,7 @@ void net_loop (int flags, int (*is_end)(void)) {
     }
     work_timers ();
 
-    printf("flags: %d ,sign_in_ok %d \n", flags, sign_in_ok);
+    //printf("flags: %d ,sign_in_ok %d \n", flags, sign_in_ok);
 
     if(flags == 1 && sign_in_ok == 1){
       unread_messages = 0;
