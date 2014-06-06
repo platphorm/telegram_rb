@@ -53,6 +53,7 @@ extern int log_level;
 int sync_from_start;
 int allow_weak_random;
 char *telegram_directory_path;
+char *phone;
 
 void set_default_username (const char *s) {
   if (default_username) { 
@@ -472,7 +473,7 @@ int telegram_main_org(int argc, char **argv) {
   return 0;
 }
 
-int telegram_main(char *pub_key, char *tel_dir){
+int telegram_main(char *phone_number, char *pub_key, char *tel_dir){
   signal (SIGSEGV, sig_segv_handler);
   signal (SIGABRT, sig_abrt_handler);
   signal(SIGINT, sig_term_handler);
@@ -480,6 +481,7 @@ int telegram_main(char *pub_key, char *tel_dir){
 
   rsa_public_key_name = pub_key;
   telegram_directory_path = tel_dir;
+  phone = phone_number;
   running_for_first_time ();
   parse_config ();
 

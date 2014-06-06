@@ -12,12 +12,14 @@ static ID sym_recv_msg;
 static ID sym_poll_queue;
 extern peer_t *Peers[];
 extern int peer_num;
+extern int sign_in_ok;
 
-static VALUE load_config(VALUE self, VALUE pub_key, VALUE telegram_dir){
+static VALUE load_config(VALUE self, VALUE phone, VALUE pub_key, VALUE telegram_dir){
   Check_Type(pub_key, T_STRING);
+  Check_Type(phone, T_STRING);
   Check_Type(telegram_dir, T_STRING);
 
-  telegram_main(RSTRING_PTR(pub_key), RSTRING_PTR(telegram_dir));
+  telegram_main(RSTRING_PTR(phone), RSTRING_PTR(pub_key), RSTRING_PTR(telegram_dir));
 
   return Qtrue;
 }
@@ -228,13 +230,17 @@ VALUE mark_message_as_read(VALUE self) {
   return Qtrue;  
 }
 
-VALUE forword_message(VALUE self, VALUE to_peer, VALUE msg_id){
+VALUE forword_message_rb(VALUE self, VALUE to_peer, VALUE msg_id){
   do_forward_message(peer_rb_to_cstruct(to_peer), NUM2INT(msg_id)); 
   return Qtrue;
 }
 
 void poll_messages_queue(){
   rb_funcall(rb_mTelegram, sym_poll_queue, 0);
+}
+
+VALUE sign_in_ok_rb(VALUE self){
+  return (sign_in_ok == 1 ? Qtrue : Qfalse);
 }
 
 VALUE start_loop_rb(VALUE self){
@@ -260,13 +266,14 @@ void Init_telegram_ext() {
   rb_cAudio = rb_const_get(rb_mTelegram, sym_audio);
   rb_cVideo = rb_const_get(rb_mTelegram, sym_video);
 
-  rb_define_singleton_method(rb_mTelegram, "load_config", load_config, 2);
+  rb_define_singleton_method(rb_mTelegram, "load_config", load_config, 3);
   rb_define_singleton_method(rb_mTelegram, "send_message", send_msg_rb, 3);
   rb_define_singleton_method(rb_mTelegram, "poll_messages", poll_msg_rb, 0);
   rb_define_singleton_method(rb_mTelegram, "contact_list", users_list_rb, 0);
   rb_define_singleton_method(rb_mTelegram, "add_contact", add_contact_rb, 4);
   rb_define_singleton_method(rb_mTelegram, "start", start_loop_rb, 0);
-  rb_define_singleton_method(rb_mTelegram, "forword_message", forword_message, 2);
+  rb_define_singleton_method(rb_mTelegram, "forword_message", forword_message_rb, 2);
+  rb_define_singleton_method(rb_mTelegram, "sign_in?", sign_in_ok_rb, 0);
 
   rb_define_method(rb_cMessage, "mark_read", mark_message_as_read, 0);
   

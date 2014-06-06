@@ -57,6 +57,8 @@ extern int unknown_user_list[];
 int register_mode;
 extern int safe_quit;
 extern int queries_num;
+extern int sign_in_ok;
+extern char *phone;
 
 int unread_messages;
 void got_it (char *line, int len);
@@ -77,8 +79,10 @@ void net_loop (int flags, int (*is_end)(void)) {
       continue;
     }
     work_timers ();
-    
-    if(flags == 1){
+
+    printf("flags: %d ,sign_in_ok %d \n", flags, sign_in_ok);
+
+    if(flags == 1 && sign_in_ok == 1){
       unread_messages = 0;
       poll_messages_queue();
     }else if(flags == 2){
@@ -506,7 +510,7 @@ int loop (void) {
       char *user = 0;
 
       if (!user) {
-        printf ("Telephone number (with '+' sign): ");         
+        printf ("Telephone number (with '+' sign): ");
         if (net_getline (&user, &size) == -1) {
           perror ("getline()");
           exit (EXIT_FAILURE);
