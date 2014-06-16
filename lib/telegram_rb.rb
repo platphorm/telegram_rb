@@ -1,3 +1,5 @@
+$stdout.sync = true
+
 require "telegram_rb/version"
 require 'telegram_rb/telegram'
 require 'telegram_rb/message'
