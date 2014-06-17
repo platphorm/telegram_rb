@@ -61,6 +61,8 @@ extern int peer_num;
 int in_chat_mode;
 peer_id_t chat_mode_id;
 
+extern FILE *log_file_p; 
+
 
 int is_same_word (const char *s, size_t l, const char *word) {
   return s && word && strlen (word) == l && !memcmp (s, word, l);
@@ -312,14 +314,15 @@ void interpreter_chat_mode (char *line) {
 void rprintf (const char *format, ...) {
   va_list ap;
   va_start (ap, format);
-  vfprintf (stdout, format, ap);
+  //vfprintf (stdout, format, ap);
+  vfprintf (log_file_p, format, ap);
   va_end (ap);
 }
 
 void hexdump (int *in_ptr, int *in_end) {
   int *ptr = in_ptr;
-  while (ptr < in_end) { printf (" %08x", *(ptr ++)); }
-  printf ("\n");
+  while (ptr < in_end) { rprintf(" %08x", *(ptr ++)); }
+  rprintf("\n");
 }
 
 int prompt_was;
@@ -345,46 +348,46 @@ void print_media (struct message_media *M) {
       return;
     case CODE_message_media_photo:
       if (M->photo.caption && strlen (M->photo.caption)) {
-        printf ("[photo %s]", M->photo.caption);
+        rprintf("[photo %s]", M->photo.caption);
       } else {
-        printf ("[photo]");
+        rprintf("[photo]");
       }
       return;
     case CODE_message_media_video:
-      printf ("[video]");
+      rprintf("[video]");
       return;
     case CODE_message_media_audio:
-      printf ("[audio]");
+      rprintf("[audio]");
       return;
     case CODE_message_media_document:
       if (M->document.mime_type && M->document.caption) {
-        printf ("[document %s: type %s]", M->document.caption, M->document.mime_type);
+        rprintf("[document %s: type %s]", M->document.caption, M->document.mime_type);
       } else {
-        printf ("[document]");
+        rprintf("[document]");
       }
       return;
     case CODE_decrypted_message_media_photo:
-       printf ("[photo]");
+       rprintf("[photo]");
       return;
     case CODE_decrypted_message_media_video:
-      printf ("[video]");
+      rprintf("[video]");
       return;
     case CODE_decrypted_message_media_audio:
-      printf ("[audio]");
+      rprintf("[audio]");
       return;
     case CODE_decrypted_message_media_document:
-      printf ("[document]");
+      rprintf("[document]");
       return;
     case CODE_message_media_geo:
-      printf ("[geo] https://maps.google.com/?q=%.6lf,%.6lf", M->geo.latitude, M->geo.longitude);
+      rprintf("[geo] https://maps.google.com/?q=%.6lf,%.6lf", M->geo.latitude, M->geo.longitude);
       return;
     case CODE_message_media_contact:
-      printf ("[contact] ");
-      printf ("%s %s ", M->first_name, M->last_name);
-      printf ("%s", M->phone);
+      rprintf("[contact] ");
+      rprintf("%s %s ", M->first_name, M->last_name);
+      rprintf("%s", M->phone);
       return;
     case CODE_message_media_unsupported:
-      printf ("[unsupported]");
+      rprintf("[unsupported]");
       return;
     default:
       assert (0);
@@ -397,7 +400,7 @@ int unknown_user_list[1000];
 void print_user_name (peer_id_t id, peer_t *U) {
   assert (get_peer_type (id) == PEER_USER);
   if (!U) {
-    printf ("user#%d", get_peer_id (id));
+    rprintf("user#%d", get_peer_id (id));
     int i;
     int ok = 1;
     for (i = 0; i < unknown_user_list_pos; i++) {
@@ -412,15 +415,15 @@ void print_user_name (peer_id_t id, peer_t *U) {
     }
   } else {
     if ((U->flags & FLAG_DELETED)) {
-      printf ("deleted user#%d", get_peer_id (id));
+      rprintf("deleted user#%d", get_peer_id (id));
     } else if (!(U->flags & FLAG_CREATED)) {
-      printf ("empty user#%d", get_peer_id (id));
+      rprintf("empty user#%d", get_peer_id (id));
     } else if (!U->user.first_name || !strlen (U->user.first_name)) {
-      printf ("%s", U->user.last_name);
+      rprintf("%s", U->user.last_name);
     } else if (!U->user.last_name || !strlen (U->user.last_name)) {
-      printf ("%s", U->user.first_name);
+      rprintf("%s", U->user.first_name);
     } else {
-      printf ("%s %s", U->user.first_name, U->user.last_name); 
+      rprintf("%s %s", U->user.first_name, U->user.last_name); 
     }
   }
 }
@@ -428,27 +431,27 @@ void print_user_name (peer_id_t id, peer_t *U) {
 void print_chat_name (peer_id_t id, peer_t *C) {
   assert (get_peer_type (id) == PEER_CHAT);
   if (!C) {
-    printf ("chat#%d", get_peer_id (id));
+    rprintf("chat#%d", get_peer_id (id));
   } else {
-    printf ("%s", C->chat.title);
+    rprintf("%s", C->chat.title);
   }
 }
 
 void print_encr_chat_name (peer_id_t id, peer_t *C) {
   assert (get_peer_type (id) == PEER_ENCR_CHAT);
   if (!C) {
-    printf ("encr_chat#%d", get_peer_id (id));
+    rprintf("encr_chat#%d", get_peer_id (id));
   } else {
-    printf ("%s", C->print_name);
+    rprintf("%s", C->print_name);
   }
 }
 
 void print_encr_chat_name_full (peer_id_t id, peer_t *C) {
   assert (get_peer_type (id) == PEER_ENCR_CHAT);
   if (!C) {
-    printf ("encr_chat#%d", get_peer_id (id));
+    rprintf("encr_chat#%d", get_peer_id (id));
   } else {
-    printf ("%s", C->print_name);
+    rprintf("%s", C->print_name);
   }
 }
 
@@ -456,15 +459,15 @@ static char *monthes[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"
 void print_date (long t) {
   struct tm *tm = localtime ((void *)&t);
   if (time (0) - t < 12 * 60 * 60) {
-    printf ("[%02d:%02d] ", tm->tm_hour, tm->tm_min);
+    rprintf("[%02d:%02d] ", tm->tm_hour, tm->tm_min);
   } else {
-    printf ("[%02d %s]", tm->tm_mday, monthes[tm->tm_mon]);
+    rprintf("[%02d %s]", tm->tm_mday, monthes[tm->tm_mon]);
   }
 }
 
 void print_date_full (long t) {
   struct tm *tm = localtime ((void *)&t);
-  printf ("[%04d/%02d/%02d %02d:%02d:%02d]", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
+  rprintf("[%04d/%02d/%02d %02d:%02d:%02d]", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
 }
 
 int our_id;
@@ -472,54 +475,54 @@ int our_id;
 void print_service_message (struct message *M) {
   assert (M);
   if (msg_num_mode) {
-    printf ("%lld ", M->id);
+    rprintf("%lld ", M->id);
   }
   print_date (M->date);
-  printf (" ");
+  rprintf(" ");
   if (get_peer_type (M->to_id) == PEER_CHAT) {
     print_chat_name (M->to_id, user_chat_get (M->to_id));
   } else {
     assert (get_peer_type (M->to_id) == PEER_ENCR_CHAT);
     print_encr_chat_name (M->to_id, user_chat_get (M->to_id));
   }
-  printf (" ");
+  rprintf(" ");
   print_user_name (M->from_id, user_chat_get (M->from_id));
  
   switch (M->action.type) {
   case CODE_message_action_empty:
-    printf ("\n");
+    rprintf("\n");
     break;
   case CODE_message_action_geo_chat_create:
-    printf ("Created geo chat\n");
+    rprintf("Created geo chat\n");
     break;
   case CODE_message_action_geo_chat_checkin:
-    printf ("Checkin in geochat\n");
+    rprintf("Checkin in geochat\n");
     break;
   case CODE_message_action_chat_create:
-    printf (" created chat %s. %d users\n", M->action.title, M->action.user_num);
+    rprintf(" created chat %s. %d users\n", M->action.title, M->action.user_num);
     break;
   case CODE_message_action_chat_edit_title:
-    printf (" changed title to %s\n", 
+    rprintf(" changed title to %s\n", 
       M->action.new_title);
     break;
   case CODE_message_action_chat_edit_photo:
-    printf (" changed photo\n");
+    rprintf(" changed photo\n");
     break;
   case CODE_message_action_chat_delete_photo:
-    printf (" deleted photo\n");
+    rprintf(" deleted photo\n");
     break;
   case CODE_message_action_chat_add_user:
-    printf (" added user ");
+    rprintf(" added user ");
     print_user_name (set_peer_id (PEER_USER, M->action.user), user_chat_get (set_peer_id (PEER_USER, M->action.user)));
-    printf ("\n");
+    rprintf("\n");
     break;
   case CODE_message_action_chat_delete_user:
-    printf (" deleted user ");
+    rprintf(" deleted user ");
     print_user_name (set_peer_id (PEER_USER, M->action.user), user_chat_get (set_peer_id (PEER_USER, M->action.user)));
-    printf ("\n");
+    rprintf("\n");
     break;
   case CODE_decrypted_message_action_set_message_t_t_l:
-    printf (" set ttl to %d seconds. Unsupported yet\n", M->action.ttl);
+    rprintf(" set ttl to %d seconds. Unsupported yet\n", M->action.ttl);
     break;
   default:
     assert (0);
@@ -550,27 +553,27 @@ void print_message (struct message *M) {
   if (get_peer_type (M->to_id) == PEER_USER) {
     if (M->out) {
       if (msg_num_mode) {
-        printf ("%lld ", M->id);
+        rprintf("%lld ", M->id);
       }
       print_date (M->date);
-      printf (" ");
+      rprintf(" ");
       print_user_name (M->to_id, user_chat_get (M->to_id));
       if (M->unread) {
-        printf (" <<< ");
+        rprintf(" <<< ");
       } else {
-        printf (" ««« ");
+        rprintf(" ««« ");
       }
     } else {
       if (msg_num_mode) {
-        printf ("%lld ", M->id);
+        rprintf("%lld ", M->id);
       }
       print_date (M->date);
-      printf (" ");
+      rprintf(" ");
       print_user_name (M->from_id, user_chat_get (M->from_id));
       if (M->unread) {
-        printf (" >>> ");
+        rprintf(" >>> ");
       } else {
-        printf (" »»» ");
+        rprintf(" »»» ");
       }
       if (alert_sound) {
         play_sound();
@@ -581,26 +584,26 @@ void print_message (struct message *M) {
     assert (P);
     if (M->out) {
       if (msg_num_mode) {
-        printf ("%lld ", M->id);
+        rprintf("%lld ", M->id);
       }
       print_date (M->date);
-      printf (" ");
-      printf (" %s", P->print_name);
+      rprintf(" ");
+      rprintf(" %s", P->print_name);
       if (M->unread) {
-        printf (" <<< ");
+        rprintf(" <<< ");
       } else {
-        printf (" ««« ");
+        rprintf(" ««« ");
       }
     } else {
       if (msg_num_mode) {
-        printf ("%lld ", M->id);
+        rprintf("%lld ", M->id);
       }
       print_date (M->date);
-      printf (" %s", P->print_name);
+      rprintf(" %s", P->print_name);
       if (M->unread) {
-        printf (" >>> ");
+        rprintf(" >>> ");
       } else {
-        printf (" »»» ");
+        rprintf(" »»» ");
       }
       if (alert_sound) {
         play_sound();
@@ -609,34 +612,34 @@ void print_message (struct message *M) {
   } else {
     assert (get_peer_type (M->to_id) == PEER_CHAT);
     if (msg_num_mode) {
-      printf ("%lld ", M->id);
+      rprintf("%lld ", M->id);
     }
     print_date (M->date);
-    printf (" ");
+    rprintf(" ");
     print_chat_name (M->to_id, user_chat_get (M->to_id));
-    printf (" ");
+    rprintf(" ");
     print_user_name (M->from_id, user_chat_get (M->from_id));
     if (M->unread) {
-      printf (" >>> ");
+      rprintf(" >>> ");
     } else {
-      printf (" »»» ");
+      rprintf(" »»» ");
     }
   }
   if (get_peer_type (M->fwd_from_id) == PEER_USER) {
-    printf ("[fwd from ");
+    rprintf("[fwd from ");
     print_user_name (M->fwd_from_id, user_chat_get (M->fwd_from_id));
-    printf ("] ");
+    rprintf("] ");
   }
   if (M->message && strlen (M->message)) {
-    printf ("%s", M->message);
+    rprintf("%s", M->message);
   }
   if (M->media.type != CODE_message_media_empty) {
     print_media (&M->media);
   }
   assert (!color_stack_pos);
-  printf ("\n");
+  rprintf("\n");
 }
 
 void play_sound (void) {
-  printf ("\a");
+  rprintf("\a");
 }

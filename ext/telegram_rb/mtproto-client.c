@@ -939,7 +939,7 @@ void work_update (struct connection *c UU, long long msg_id UU) {
       fetch_pts ();
       if (log_level >= 1) {
         print_date (time (0));
-        printf (" %d messages marked as read\n", n);
+        rprintf(" %d messages marked as read\n", n);
       }
     }
     break;
@@ -949,9 +949,9 @@ void work_update (struct connection *c UU, long long msg_id UU) {
       peer_t *U = user_chat_get (id);
       if (log_level >= 2) {
         print_date (time (0));
-        printf (" User ");
+        rprintf(" User ");
         print_user_name (id, U);
-        printf (" is typing....\n");
+        rprintf(" is typing....\n");
       }
     }
     break;
@@ -963,11 +963,11 @@ void work_update (struct connection *c UU, long long msg_id UU) {
       peer_t *U = user_chat_get (id);
       if (log_level >= 2) {
         print_date (time (0));
-        printf (" User ");
+        rprintf(" User ");
         print_user_name (id, U);
-        printf (" is typing in chat ");
+        rprintf(" is typing in chat ");
         print_chat_name (chat_id, C);
-        printf ("....\n");
+        rprintf("....\n");
       }
     }
     break;
@@ -979,10 +979,10 @@ void work_update (struct connection *c UU, long long msg_id UU) {
         fetch_user_status (&U->user.status);
         if (log_level >= 3) {
           print_date (time (0));
-          printf (" User ");
+          rprintf(" User ");
           print_user_name (user_id, U);
-          printf (" is now ");
-          printf ("%s\n", (U->user.status.online > 0) ? "online" : "offline");
+          rprintf(" is now ");
+          rprintf("%s\n", (U->user.status.online > 0) ? "online" : "offline");
         }
       } else {
         struct user_status t;
@@ -1003,11 +1003,11 @@ void work_update (struct connection *c UU, long long msg_id UU) {
         bl_do_set_user_real_name (U, f, l1, l, l2);
         
         print_date (time (0));
-        printf (" User ");
+        rprintf(" User ");
         print_user_name (user_id, UC);
-        printf (" changed name to ");
+        rprintf(" changed name to ");
         print_user_name (user_id, UC);
-        printf ("\n");
+        rprintf("\n");
       } else {
         fetch_skip_str ();
         fetch_skip_str ();
@@ -1040,9 +1040,9 @@ void work_update (struct connection *c UU, long long msg_id UU) {
         bl_do_set_user_profile_photo (U, photo_id, &big, &small);
 
         print_date (time (0));
-        printf (" User ");
+        rprintf(" User ");
         print_user_name (user_id, UC);
-        printf (" updated profile photo\n");
+        rprintf(" updated profile photo\n");
         
       } else {
         struct file_location t;
@@ -1064,7 +1064,7 @@ void work_update (struct connection *c UU, long long msg_id UU) {
       int n = fetch_int ();
       
       print_date (time (0));
-      printf (" Restored %d messages\n", n);
+      rprintf(" Restored %d messages\n", n);
       
       fetch_skip (n);
       fetch_pts ();
@@ -1076,7 +1076,7 @@ void work_update (struct connection *c UU, long long msg_id UU) {
       int n = fetch_int ();
       
       print_date (time (0));
-      printf (" Deleted %d messages\n", n);
+      rprintf(" Deleted %d messages\n", n);
       
       fetch_skip (n);
       fetch_pts ();
@@ -1116,12 +1116,12 @@ void work_update (struct connection *c UU, long long msg_id UU) {
       }
       
       print_date (time (0));
-      printf (" Chat ");
+      rprintf(" Chat ");
       print_chat_name (chat_id, C);
       if (x == CODE_chat_participants) {
-        printf (" changed list: now %d members\n", n);
+        rprintf(" changed list: now %d members\n", n);
       } else {
-        printf (" changed list, but we are forbidden to know about it (Why this update even was sent to us?\n");
+        rprintf(" changed list, but we are forbidden to know about it (Why this update even was sent to us?\n");
       }
       
     }
@@ -1133,9 +1133,9 @@ void work_update (struct connection *c UU, long long msg_id UU) {
       fetch_int (); // date
       
       print_date (time (0));
-      printf (" User ");
+      rprintf(" User ");
       print_user_name (user_id, U);
-      printf (" registered\n");
+      rprintf(" registered\n");
       
     }
     break;
@@ -1145,9 +1145,9 @@ void work_update (struct connection *c UU, long long msg_id UU) {
       peer_t *U = user_chat_get (user_id);
       
       print_date (time (0));
-      printf (" Updated link with user ");
+      rprintf(" Updated link with user ");
       print_user_name (user_id, U);
-      printf ("\n");
+      rprintf("\n");
       
       unsigned t = fetch_int ();
       assert (t == CODE_contacts_my_link_empty || t == CODE_contacts_my_link_requested || t == CODE_contacts_my_link_contact);
@@ -1167,9 +1167,9 @@ void work_update (struct connection *c UU, long long msg_id UU) {
       peer_t *U = user_chat_get (user_id);
       
       print_date (time (0));
-      printf (" User ");
+      rprintf(" User ");
       print_user_name (user_id, U);
-      printf (" activated\n");
+      rprintf(" activated\n");
       
     }
     break;
@@ -1181,7 +1181,7 @@ void work_update (struct connection *c UU, long long msg_id UU) {
       char *location = fetch_str_dup ();
       
       print_date (time (0));
-      printf (" New autorization: device='%s' location='%s'\n",
+      rprintf(" New autorization: device='%s' location='%s'\n",
         s, location);
       
       tfree_str (s);
@@ -1215,24 +1215,24 @@ void work_update (struct connection *c UU, long long msg_id UU) {
       case sc_none:
         break;
       case sc_waiting:
-        printf (" Encrypted chat ");
+        rprintf(" Encrypted chat ");
         print_encr_chat_name (E->id, (void *)E);
-        printf (" is now in wait state\n");
+        rprintf(" is now in wait state\n");
         break;
       case sc_request:
-        printf (" Encrypted chat ");
+        rprintf(" Encrypted chat ");
         print_encr_chat_name (E->id, (void *)E);
-        printf (" is now in request state. Sending request ok\n");
+        rprintf(" is now in request state. Sending request ok\n");
         break;
       case sc_ok:
-        printf (" Encrypted chat ");
+        rprintf(" Encrypted chat ");
         print_encr_chat_name (E->id, (void *)E);
-        printf (" is now in ok state\n");
+        rprintf(" is now in ok state\n");
         break;
       case sc_deleted:
-        printf (" Encrypted chat ");
+        rprintf(" Encrypted chat ");
         print_encr_chat_name (E->id, (void *)E);
-        printf (" is now in deleted state\n");
+        rprintf(" is now in deleted state\n");
         break;
       }
       
@@ -1249,14 +1249,14 @@ void work_update (struct connection *c UU, long long msg_id UU) {
       
       print_date (time (0));
       if (P) {
-        printf (" User ");
+        rprintf(" User ");
         peer_id_t user_id = MK_USER (P->encr_chat.user_id);
         print_user_name (user_id, user_chat_get (user_id));
-        printf (" typing in secret chat ");
+        rprintf(" typing in secret chat ");
         print_encr_chat_name (id, P);
-        printf ("\n");
+        rprintf("\n");
       } else {
-        printf (" Some user is typing in unknown secret chat\n");
+        rprintf(" Some user is typing in unknown secret chat\n");
       }
       
     }
@@ -1282,9 +1282,9 @@ void work_update (struct connection *c UU, long long msg_id UU) {
       if (log_level >= 1) {
         
         print_date (time (0));
-        printf (" Encrypted chat ");
+        rprintf(" Encrypted chat ");
         print_encr_chat_name_full (id, user_chat_get (id));
-        printf (": %d messages marked read \n", x);
+        rprintf(": %d messages marked read \n", x);
       }
     }
     break;
@@ -1302,13 +1302,13 @@ void work_update (struct connection *c UU, long long msg_id UU) {
 
       
       print_date (time (0));
-      printf (" Chat ");
+      rprintf(" Chat ");
       print_chat_name (chat_id, user_chat_get (chat_id));
-      printf (": user ");
+      rprintf(": user ");
       print_user_name (user_id, user_chat_get (user_id));
-      printf (" added by user ");
+      rprintf(" added by user ");
       print_user_name (inviter_id, user_chat_get (inviter_id));
-      printf ("\n");
+      rprintf("\n");
       
     }
     break;
@@ -1324,11 +1324,11 @@ void work_update (struct connection *c UU, long long msg_id UU) {
       }
 
       print_date (time (0));
-      printf (" Chat ");
+      rprintf(" Chat ");
       print_chat_name (chat_id, user_chat_get (chat_id));
-      printf (": user ");
+      rprintf(": user ");
       print_user_name (user_id, user_chat_get (user_id));
-      printf (" deleted\n");
+      rprintf(" deleted\n");
     }
     break;
   case CODE_update_dc_options:

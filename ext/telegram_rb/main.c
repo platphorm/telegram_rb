@@ -54,6 +54,7 @@ int sync_from_start;
 int allow_weak_random;
 char *telegram_directory_path;
 char *phone;
+FILE *log_file_p;
 
 void set_default_username (const char *s) {
   if (default_username) { 
@@ -432,6 +433,7 @@ void sig_segv_handler (int signum __attribute__ ((unused))) {
     // Sad thing
   }
   print_backtrace ();
+  fclose(log_file_p);
   exit (EXIT_FAILURE);
 }
 
@@ -441,11 +443,13 @@ void sig_abrt_handler (int signum __attribute__ ((unused))) {
     // Sad thing
   }
   print_backtrace ();
+  fclose(log_file_p);
   exit (EXIT_FAILURE);
 }
 
 void sig_term_handler (int signum __attribute__ ((unused))) {
   safe_quit = 1;
+  fclose(log_file_p);
   exit (0);
 }
 
@@ -473,7 +477,7 @@ int telegram_main_org(int argc, char **argv) {
   return 0;
 }
 
-int telegram_main(char *phone_number, char *pub_key, char *tel_dir){
+int telegram_main(char *phone_number, char *pub_key, char *tel_dir, char *log_file_path){
   signal (SIGSEGV, sig_segv_handler);
   signal (SIGABRT, sig_abrt_handler);
   signal(SIGINT, sig_term_handler);
@@ -484,6 +488,13 @@ int telegram_main(char *phone_number, char *pub_key, char *tel_dir){
   phone = phone_number;
   running_for_first_time ();
   parse_config ();
+
+  if((log_file_p = fopen(log_file_path, "a")) == NULL) {
+    printf("Cannot open file.\n");
+    exit(1);
+  }
+
+  setvbuf(log_file_p, NULL, _IONBF, BUFSIZ);
 
   //get_terminal_attributes ();
   inner_main ();

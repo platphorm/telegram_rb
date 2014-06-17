@@ -16,7 +16,7 @@ module Telegram
 
     TelegramRb::Config.download_folder = "#{options[:telegram_dir]}/.telegram/downloads"
 
-    self.load_config(options[:phone], options[:key], options[:telegram_dir])
+    self.load_config(options[:phone], options[:key], options[:telegram_dir], options[:log_file])
   end
 
 end

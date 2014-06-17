@@ -689,25 +689,25 @@ int get_contacts_on_answer (struct query *q UU) {
   n = fetch_int ();
   for (i = 0; i < n; i++) {
     struct user *U = fetch_alloc_user ();
-    printf ("User #%d: ", get_peer_id (U->id));
+    rprintf("User #%d: ", get_peer_id (U->id));
     print_user_name (U->id, (peer_t *)U);
-    printf (" (");
-    printf ("%s", U->print_name);
+    rprintf(" (");
+    rprintf("%s", U->print_name);
     if (U->phone) {
-      printf (" ");
-      printf ("%s", U->phone);
+      rprintf(" ");
+      rprintf("%s", U->phone);
     }
-    printf (") ");
+    rprintf(") ");
     if (U->status.online > 0) {
-      printf ("online\n");
+      rprintf("online\n");
     } else {
       if (U->status.online < 0) {
-        printf ("offline. Was online ");
+        rprintf("offline. Was online ");
         print_date_full (U->status.when);
       } else {
-        printf ("offline permanent");
+        rprintf("offline permanent");
       }
-      printf ("\n");
+      rprintf("\n");
     }
   }
   return 0;
@@ -857,9 +857,9 @@ int msg_send_on_answer (struct query *q UU) {
       if (b == CODE_contacts_foreign_link_requested) {
         U->flags |= FLAG_USER_OUT_CONTACT;
       }
-      printf ("Link with user ");
+      rprintf("Link with user ");
       print_user_name (U->id, (void *)U);
-      printf (" changed\n");
+      rprintf(" changed\n");
     }
   }
   rprintf ("Sent: id = %d\n", id);
@@ -1156,15 +1156,15 @@ int get_dialogs_on_answer (struct query *q UU) {
     switch (get_peer_type (plist[i])) {
     case PEER_USER:
       UC = user_chat_get (plist[i]);
-      printf ("User ");
+      rprintf("User ");
       print_user_name (plist[i], UC);
-      printf (": %d unread\n", dlist[2 * i + 1]);
+      rprintf(": %d unread\n", dlist[2 * i + 1]);
       break;
     case PEER_CHAT:
       UC = user_chat_get (plist[i]);
-      printf ("Chat ");
+      rprintf("Chat ");
       print_chat_name (plist[i], UC);
-      printf (": %d unread\n", dlist[2 * i + 1]);
+      rprintf(": %d unread\n", dlist[2 * i + 1]);
       break;
     }
   }
@@ -1621,21 +1621,21 @@ void do_rename_chat (peer_id_t id, char *name UU) {
 /* {{{ Chat info */
 void print_chat_info (struct chat *C) {
   peer_t *U = (void *)C;
-  printf ("Chat ");
+  rprintf("Chat ");
   print_chat_name (U->id, U);
-  printf (" members:\n");
+  rprintf(" members:\n");
   int i;
   for (i = 0; i < C->user_list_size; i++) {
-    printf ("\t\t");
+    rprintf("\t\t");
     print_user_name (MK_USER (C->user_list[i].user_id), user_chat_get (MK_USER (C->user_list[i].user_id)));
-    printf (" invited by ");
+    rprintf(" invited by ");
     print_user_name (MK_USER (C->user_list[i].inviter_id), user_chat_get (MK_USER (C->user_list[i].inviter_id)));
-    printf (" at ");
+    rprintf(" at ");
     print_date_full (C->user_list[i].date);
     if (C->user_list[i].user_id == C->admin_id) {
-      printf (" admin");
+      rprintf(" admin");
     }
-    printf ("\n");
+    rprintf("\n");
   }
 }
 
@@ -1671,17 +1671,17 @@ void do_get_chat_info (peer_id_t id) {
 
 void print_user_info (struct user *U) {
   peer_t *C = (void *)U;
-  printf ("User ");
+  rprintf("User ");
   print_user_name (U->id, C);
-  printf (":\n");
-  printf ("\treal name: %s %s\n", U->real_first_name, U->real_last_name);
-  printf ("\tphone: %s\n", U->phone);
+  rprintf(":\n");
+  rprintf("\treal name: %s %s\n", U->real_first_name, U->real_last_name);
+  rprintf("\tphone: %s\n", U->phone);
   if (U->status.online > 0) {
-    printf ("\tonline\n");
+    rprintf("\tonline\n");
   } else {
-    printf ("\toffline (was online ");
+    rprintf("\toffline (was online ");
     print_date_full (U->status.when);
-    printf (")\n");
+    rprintf(")\n");
   }
 }
 
@@ -2091,25 +2091,25 @@ int add_contact_on_answer (struct query *q UU) {
   n = fetch_int ();
   for (i = 0; i < n ; i++) {
     struct user *U = fetch_alloc_user ();
-    printf ("User #%d: ", get_peer_id (U->id));
+    rprintf("User #%d: ", get_peer_id (U->id));
     print_user_name (U->id, (peer_t *)U);
-    printf (" (");
-    printf ("%s", U->print_name);
+    rprintf(" (");
+    rprintf("%s", U->print_name);
     if (U->phone) {
-      printf (" ");
-      printf ("%s", U->phone);
+      rprintf(" ");
+      rprintf("%s", U->phone);
     }
-    printf (") ");
+    rprintf(") ");
     if (U->status.online > 0) {
-      printf ("online\n");
+      rprintf("online\n");
     } else {
       if (U->status.online < 0) {
-        printf ("offline. Was online ");
+        rprintf("offline. Was online ");
         print_date_full (U->status.when);
       } else {
-        printf ("offline permanent");
+        rprintf("offline permanent");
       }
-      printf ("\n");
+      rprintf("\n");
     }
   }
   return 0;
@@ -2180,9 +2180,9 @@ int contacts_search_on_answer (struct query *q UU) {
   n = fetch_int ();
   for (i = 0; i < n; i++) {
     struct user *U = fetch_alloc_user ();
-    printf ("User ");
-    printf ("%s %s", U->first_name, U->last_name); 
-    printf (". Phone %s\n", U->phone);
+    rprintf("User ");
+    rprintf("%s %s", U->first_name, U->last_name); 
+    rprintf(". Phone %s\n", U->phone);
   }
   return 0;
 }
@@ -2205,13 +2205,13 @@ int send_encr_accept_on_answer (struct query *q UU) {
   struct secret_chat *E = fetch_alloc_encrypted_chat ();
 
   if (E->state == sc_ok) {
-    printf ("Encrypted connection with ");
+    rprintf("Encrypted connection with ");
     print_encr_chat_name (E->id, (void *)E);
-    printf (" established\n");
+    rprintf(" established\n");
   } else {
-    printf ("Encrypted connection with ");
+    rprintf("Encrypted connection with ");
     print_encr_chat_name (E->id, (void *)E);
-    printf (" failed\n");
+    rprintf(" failed\n");
   }
   return 0;
 }
@@ -2219,13 +2219,13 @@ int send_encr_accept_on_answer (struct query *q UU) {
 int send_encr_request_on_answer (struct query *q UU) {
   struct secret_chat *E = fetch_alloc_encrypted_chat ();
   if (E->state == sc_deleted) {
-    printf ("Encrypted connection with ");
+    rprintf("Encrypted connection with ");
     print_encr_chat_name (E->id, (void *)E);
-    printf (" can not be established\n");
+    rprintf(" can not be established\n");
   } else {
-    printf ("Establishing connection with ");
+    rprintf("Establishing connection with ");
     print_encr_chat_name (E->id, (void *)E);
-    printf ("\n");
+    rprintf("\n");
 
     assert (E->state == sc_waiting);
   }
@@ -2610,10 +2610,10 @@ void do_visualize_key (peer_id_t id) {
     int x = buf[i];
     int j;
     for (j = 0; j < 4; j ++) {    
-      printf ("  ");
+      rprintf("  ");
       x = x >> 2;
     }
-    if (i & 1) { printf ("\n"); }
+    if (i & 1) { rprintf("\n"); }
   }
 }
 /* }}} */
@@ -2639,7 +2639,7 @@ int get_suggested_on_answer (struct query *q UU) {
     peer_t *U = (void *)fetch_alloc_user ();
     assert (get_peer_id (U->id) == l[2 * i]);
     print_user_name (U->id, U);
-    printf (" phone %s: %d mutual friends\n", U->user.phone, l[2 * i + 1]);
+    rprintf(" phone %s: %d mutual friends\n", U->user.phone, l[2 * i + 1]);
   }
   return 0;
 }

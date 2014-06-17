@@ -1119,7 +1119,7 @@ void create_new_binlog (void) {
 
 void replay_log (void) {
   if (access (get_binlog_file_name (), F_OK) < 0) {
-    printf ("No binlog found. Creating new one\n");
+    rprintf("No binlog found. Creating new one\n");
     create_new_binlog ();
   }
   int fd = open (get_binlog_file_name (), O_RDONLY);

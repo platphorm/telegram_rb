@@ -14,12 +14,13 @@ extern peer_t *Peers[];
 extern int peer_num;
 extern int sign_in_ok;
 
-static VALUE load_config(VALUE self, VALUE phone, VALUE pub_key, VALUE telegram_dir){
+static VALUE load_config(VALUE self, VALUE phone, VALUE pub_key, VALUE telegram_dir, VALUE log_file){
   Check_Type(pub_key, T_STRING);
   Check_Type(phone, T_STRING);
   Check_Type(telegram_dir, T_STRING);
+  Check_Type(log_file, T_STRING);
 
-  telegram_main(RSTRING_PTR(phone), RSTRING_PTR(pub_key), RSTRING_PTR(telegram_dir));
+  telegram_main(RSTRING_PTR(phone), RSTRING_PTR(pub_key), RSTRING_PTR(telegram_dir), RSTRING_PTR(log_file));
 
   return Qtrue;
 }
@@ -266,7 +267,7 @@ void Init_telegram_ext() {
   rb_cAudio = rb_const_get(rb_mTelegram, sym_audio);
   rb_cVideo = rb_const_get(rb_mTelegram, sym_video);
 
-  rb_define_singleton_method(rb_mTelegram, "load_config", load_config, 3);
+  rb_define_singleton_method(rb_mTelegram, "load_config", load_config, 4);
   rb_define_singleton_method(rb_mTelegram, "send_message", send_msg_rb, 3);
   rb_define_singleton_method(rb_mTelegram, "poll_messages", poll_msg_rb, 0);
   rb_define_singleton_method(rb_mTelegram, "contact_list", users_list_rb, 0);

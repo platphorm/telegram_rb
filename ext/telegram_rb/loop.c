@@ -93,7 +93,7 @@ void net_loop (int flags, int (*is_end)(void)) {
     connections_poll_result (fds, x);
 
     if (safe_quit && !queries_num) {
-      printf ("All done. Exit\n");
+      rprintf("All done. Exit\n");
       exit (0);
     }
     if (unknown_user_list_pos) {
@@ -510,7 +510,7 @@ int loop (void) {
       char *user = 0;
 
       if (!user) {
-        printf ("Telephone number (with '+' sign): ");
+        rprintf("Telephone number (with '+' sign): ");
         if (net_getline (&user, &size) == -1) {
           perror ("getline()");
           exit (EXIT_FAILURE);
@@ -525,27 +525,27 @@ int loop (void) {
       do_send_code (default_username);
       char *code = 0;
       size_t size = 0;
-      printf ("Code from sms (if you did not receive an SMS and want to be called, type \"call\"): ");
+      rprintf("Code from sms (if you did not receive an SMS and want to be called, type \"call\"): ");
       while (1) {
         if (net_getline (&code, &size) == -1) {
           perror ("getline()");
           exit (EXIT_FAILURE);
         }
         if (!strcmp (code, "call")) {
-          printf ("You typed \"call\", switching to phone system.\n");
+          rprintf("You typed \"call\", switching to phone system.\n");
           do_phone_call (default_username);
-          printf ("Calling you! Code: ");
+          rprintf("Calling you! Code: ");
           continue;
         }
         if (do_send_code_result (code) >= 0) {
           break;
         }
-        printf ("Invalid code. Try again: ");
+        rprintf("Invalid code. Try again: ");
         tfree_str (code);
       }
       auth_state = 300;
     } else {
-      printf ("User is not registered. Do you want to register? [Y/n] ");
+      rprintf("User is not registered. Do you want to register? [Y/n] ");
       char *code;
       size_t size;
       if (net_getline (&code, &size) == -1) {
@@ -553,19 +553,19 @@ int loop (void) {
         exit (EXIT_FAILURE);
       }
       if (!*code || *code == 'y' || *code == 'Y') {
-        printf ("Ok, starting registartion.\n");
+        rprintf("Ok, starting registartion.\n");
       } else {
-        printf ("Then try again\n");
+        rprintf("Then try again\n");
         exit (EXIT_SUCCESS);
       }
       char *first_name;
-      printf ("First name: ");
+      rprintf("First name: ");
       if (net_getline (&first_name, &size) == -1) {
         perror ("getline()");
         exit (EXIT_FAILURE);
       }
       char *last_name;
-      printf ("Last name: ");
+      rprintf("Last name: ");
       if (net_getline (&last_name, &size) == -1) {
         perror ("getline()");
         exit (EXIT_FAILURE);
@@ -577,22 +577,22 @@ int loop (void) {
       DC_working = DC_list[dc_working_num];
       
       do_send_code (default_username);
-      printf ("Code from sms (if you did not receive an SMS and want to be called, type \"call\"): ");
+      rprintf("Code from sms (if you did not receive an SMS and want to be called, type \"call\"): ");
       while (1) {
         if (net_getline (&code, &size) == -1) {
           perror ("getline()");
           exit (EXIT_FAILURE);
         }
         if (!strcmp (code, "call")) {
-          printf ("You typed \"call\", switching to phone system.\n");
+          rprintf("You typed \"call\", switching to phone system.\n");
           do_phone_call (default_username);
-          printf ("Calling you! Code: ");
+          rprintf("Calling you! Code: ");
           continue;
         }
         if (do_send_code_result_auth (code, first_name, last_name) >= 0) {
           break;
         }
-        printf ("Invalid code. Try again: ");
+        rprintf("Invalid code. Try again: ");
         tfree_str (code);
       }
       auth_state = 300;
