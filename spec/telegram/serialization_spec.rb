@@ -1,7 +1,7 @@
 $:.unshift(File.dirname(__FILE__))
 require 'spec_helper'
   
-module Telegram 
+module TelegramRb 
 
   describe 'Serialization' do
 

@@ -17,4 +17,6 @@ test/version_tmp
 tmp
 debug
 out
-
+ext
+config/config.yml
+config/tg.pub

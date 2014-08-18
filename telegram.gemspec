@@ -1,10 +1,10 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'telegram_rb/version'
+require 'telegram/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "telegram_rb"
+  spec.name          = "telegram"
   spec.version       = Telegram::VERSION
   spec.authors       = ["Jiren Patel"]
   spec.email         = ["jiren@joshsoftware.com"]
@@ -18,11 +18,10 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
   spec.platform = Gem::Platform::RUBY
-  spec.extensions << "ext/telegram_rb/extconf.rb"
 
-  spec.add_development_dependency "rake-compiler"
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
-  spec.add_dependency 'type_array'
+
+  spec.add_dependency "json", "~> 1.8.1"
 end
