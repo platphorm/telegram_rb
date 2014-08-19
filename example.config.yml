@@ -1,0 +1,14 @@
+# https://core.telegram.org/api/obtaining_api_id
+app_id: 12345
+api_hash: 98ofafaa2eewadadadaqeqrvfa
+test_ip: 173.240.5.253:443
+production_ip: 173.240.5.1:443
+public_key:
+  -----BEGIN RSA PUBLIC KEY-----
+  MIIBCgKCAQEAwVACPi9w23mF3tBkdZz+zwrzKOaaQdr01vAbU4E1pvkfj4sqDsm6
+  lyDONS78afafx/xCS9Y0hkkC3gtL1tSfTlgCMOOul9lcixlEKzwKENj1Yz/s7daS
+  an9tqw3bfUczadgbhGX81v/+7RFAEd+RwFnK7a+XYl9sluzHRyVVaTTveB2GazTw
+  Efzk2DWgkBluml8OREmvfraX3bkHZJTKX4EQSjBbbdJ2ZXIsRrYOXfaA+xayEGB+
+  8hdlLmAjbCVdsgffaffaigxafafX0CafafDqWggeR1eqVwMbMu7mStFai6aIhc3n
+  Slv8kg9qv1m6XHVQY3dfadXklHwIDAQAB
+  -----END RSA PUBLIC KEY-----
