@@ -22,7 +22,7 @@
 #include <poll.h>
 struct dc;
 #include "queries.h"
-#define TG_SERVER "173.240.5.1"
+#define TG_SERVER "149.154.175.50"
 #define TG_SERVER_TEST "173.240.5.253"
 #define TG_APP_HASH "36722c72256a24c1225de00eb6a1ca74"
 #define TG_APP_ID 2899
