@@ -78,10 +78,10 @@ optflags = -O3 -fno-fast-math
 debugflags = -ggdb3
 warnflags = -Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wunused-variable -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration
 CCDLFLAGS = 
-CFLAGS   = $(CCDLFLAGS) $(cflags)  -fPIC -DHAVE_CONFIG_H -Wall -Wextra -Wno-deprecated-declarations -fno-strict-aliasing -fno-omit-frame-pointer  $(ARCH_FLAG)
+CFLAGS   = $(CCDLFLAGS) $(cflags)  -fPIC -DHAVE_CONFIG_H -Wall -Wextra -Wno-deprecated-declarations -fno-strict-aliasing -fno-omit-frame-pointer $(ARCH_FLAG)
 INCFLAGS = -I. -I$(arch_hdrdir) -I$(hdrdir)/ruby/backward -I$(hdrdir) -I$(srcdir)
 DEFS     = 
-CPPFLAGS =   $(DEFS) $(cppflags)
+CPPFLAGS =  -Iinc  $(DEFS) $(cppflags)
 CXXFLAGS = $(CCDLFLAGS) $(cxxflags) $(ARCH_FLAG)
 ldflags  = -L. -fstack-protector -rdynamic -Wl,-export-dynamic
 dldflags =  
@@ -120,8 +120,8 @@ TOUCH = exit >
 
 preload = 
 
-libpath = . $(libdir)
-LIBPATH =  -L. -L$(libdir) -Wl,-R$(libdir)
+libpath = . $(libdir) libs
+LIBPATH =  -L. -L$(libdir) -Wl,-R$(libdir) -Llibs -Wl,-Rlibs
 DEFFILE = 
 
 CLEANFILES = mkmf.log
@@ -132,7 +132,7 @@ extout =
 extout_prefix = 
 target_prefix = 
 LOCAL_LIBS = 
-LIBS = $(LIBRUBYARG_SHARED) -lcrypto -lm -lz -lconfig  -lpthread -ldl -lcrypt -lm   -lc
+LIBS = $(LIBRUBYARG_SHARED) -lcrypto -lm -lz -lconfig -ltgl  -lpthread -ldl -lcrypt -lm   -lc
 ORIG_SRCS = main.c telegram_ext.c
 SRCS = $(ORIG_SRCS) 
 OBJS = main.o telegram_ext.o
