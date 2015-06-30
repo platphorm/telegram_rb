@@ -2,7 +2,7 @@
 #define __MAIN_H__
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include "../config.h"
 #endif
 
 #include <stdio.h>
@@ -27,9 +27,8 @@
 #endif
 
 #include "telegram.h"
-#include "loop.h"
 #include "mtproto-client.h"
-#include "interface.h"
+#include "tgl-structures.h"
 #include "tools.h"
 
 int telegram_main();

@@ -1,6 +1,15 @@
 /* config.h.  Generated from config.h.in by configure.  */
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* disable extf queries */
+/* #undef DISABLE_EXTF */
+
+/* Use libevent v1 */
+/* #undef EVENT_V1 */
+
+/* Use libevent v2 */
+/* #undef EVENT_V2 */
+
 /* Define to 1 if you have the `alarm' function. */
 #define HAVE_ALARM 1
 
@@ -19,33 +28,24 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
 
-/* Define to 1 if you have the <lauxlib.h> header file. */
-#define HAVE_LAUXLIB_H 1
-
-/* Define to 1 if you have the `config' library (-lconfig). */
-#define HAVE_LIBCONFIG 1
-
-/* Define to 1 if you have the `crypto' library (-lcrypto). */
-#define HAVE_LIBCRYPTO 1
-
-/* Define to 1 if you have the `edit' library (-ledit). */
-#define HAVE_LIBEDIT 1
+/* Define to 1 if you have the `event' library (-levent). */
+/* #undef HAVE_LIBEVENT */
 
 /* Define to 1 if you have the `m' library (-lm). */
 #define HAVE_LIBM 1
 
-/* Define to 1 if you have the `z' library (-lz). */
+/* Define to 1 if you have `z' library (-lz) */
 #define HAVE_LIBZ 1
 
 /* Define to 1 if you have the <mach/mach.h> header file. */
-#define HAVE_MACH_MACH_H 1
+/* #undef HAVE_MACH_MACH_H */
 
 /* Define to 1 if your system has a GNU libc compatible `malloc' function, and
    to 0 otherwise. */
 #define HAVE_MALLOC 1
 
 /* Define to 1 if you have the <malloc.h> header file. */
-/* #undef HAVE_MALLOC_H */
+#define HAVE_MALLOC_H 1
 
 /* Define to 1 if you have the `memmove' function. */
 #define HAVE_MEMMOVE 1
@@ -114,29 +114,32 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #define HAVE_UNISTD_H 1
 
+/* Define to 1 if the system has the `__builtin_bswap32' built-in function */
+#define HAVE___BUILTIN_BSWAP32 1
+
 /* Define to the address where bug reports for this package should be sent. */
 #define PACKAGE_BUGREPORT ""
 
 /* Define to the full name of this package. */
-#define PACKAGE_NAME "telegram"
+#define PACKAGE_NAME "telegram-cli"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "telegram 0.1"
+#define PACKAGE_STRING "telegram-cli 1.0"
 
 /* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME "telegram"
+#define PACKAGE_TARNAME "telegram-cli"
 
 /* Define to the home page for this package. */
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.1"
-
-/* Use custom prog name */
-/* #undef PROG_NAME */
+#define PACKAGE_VERSION "1.0"
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
+
+/* fixed for correct valgrind work */
+/* #undef VALGRIND_FIXES */
 
 /* Define to `int' if <sys/types.h> doesn't define. */
 /* #undef gid_t */
