@@ -49,7 +49,7 @@ char *downloads_directory;
 char *config_directory;
 char *binlog_file_name;
 int binlog_enabled;
-extern int log_level;
+int log_level;
 int sync_from_start;
 int allow_weak_random;
 
