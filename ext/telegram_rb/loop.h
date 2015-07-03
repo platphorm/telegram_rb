@@ -16,9 +16,14 @@
 
     Copyright Vitaly Valtman 2013-2015
 */
+#ifndef __LOOP_H__
+#define __LOOP_H__
+#define TELEGRAM_CLI_APP_HASH "36722c72256a24c1225de00eb6a1ca74"
+#define TELEGRAM_CLI_APP_ID 2899
 
-#ifndef PROG_NAME
-#define PROG_NAME "telegram-cli"
+int loop (void);
+void do_halt (int error);
+void write_auth_file (void);
+void write_state_file (void);
+void write_secret_chat_file (void);
 #endif
-
-#define TELEGRAM_CLI_VERSION "1.3.3"
