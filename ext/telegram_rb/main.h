@@ -27,9 +27,8 @@
 #endif
 
 #include "telegram.h"
-#include "loop.h"
 #include "mtproto-client.h"
-#include "interface.h"
+#include "tgl-structures.h"
 #include "tools.h"
 
 int telegram_main();

@@ -49,7 +49,7 @@ char *downloads_directory;
 char *config_directory;
 char *binlog_file_name;
 int binlog_enabled;
-extern int log_level;
+int log_level;
 int sync_from_start;
 int allow_weak_random;
 
@@ -329,9 +329,9 @@ void usage (void) {
   exit (1);
 }
 
-extern char *rsa_public_key_name;
-extern int verbosity;
-extern int default_dc_num;
+char *rsa_public_key_name;
+int verbosity;
+int default_dc_num;
 
 char *log_net_file;
 FILE *log_net_f;
@@ -440,7 +440,7 @@ int telegram_main_org(int argc, char **argv) {
   
   args_parse (argc, argv);
   printf (
-    "Telegram-client version " TG_VERSION ", Copyright (C) 2013 Vitaly Valtman\n"
+    "Telegram-client version , Copyright (C) 2013 Vitaly Valtman\n"
     "Telegram-client comes with ABSOLUTELY NO WARRANTY; for details type `show_license'.\n"
     "This is free software, and you are welcome to redistribute it\n"
     "under certain conditions; type `show_license' for details.\n"

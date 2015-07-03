@@ -5,8 +5,8 @@ static VALUE rb_mTelegram;
 static VALUE rb_cPeerId;
 static VALUE rb_cMessage;
 static VALUE rb_cUser;
-extern peer_t *Peers[];
-extern int peer_num;
+tgl_peer_t *Peers[];
+int peer_num;
 
 static VALUE load_config(VALUE self, VALUE pub_key){
   Check_Type(pub_key, T_STRING);
@@ -16,7 +16,7 @@ static VALUE load_config(VALUE self, VALUE pub_key){
   return Qnil;
 }
 
-VALUE build_peer_rb_obj(peer_id_t peer){
+VALUE build_peer_rb_obj(tgl_peer_id_t peer){
   VALUE argv[2];
 
   argv[0] = INT2FIX(peer.type);
@@ -25,7 +25,7 @@ VALUE build_peer_rb_obj(peer_id_t peer){
   return rb_class_new_instance(2, argv, rb_cPeerId);
 }
 
-void tel_new_msg(struct message *M, int fn){
+void tel_new_msg(struct tgl_message *M, int fn){
   VALUE argv[0];
   VALUE msg = rb_class_new_instance(0, argv, rb_cMessage);
 
@@ -43,7 +43,7 @@ void tel_new_msg(struct message *M, int fn){
 }
 
 VALUE send_msg_rb(VALUE self, VALUE peer, VALUE msg){
-  peer_id_t c_peer;
+  tgl_peer_id_t c_peer;
   c_peer.id = FIX2INT(rb_iv_get(peer, "@id"));
   c_peer.type = FIX2INT(rb_iv_get(peer, "@type"));
 
@@ -58,7 +58,7 @@ VALUE poll_msg_rb(VALUE self){
   return Qnil;
 }
 
-VALUE build_user_rb_obj(peer_t *peer){
+VALUE build_user_rb_obj(tgl_peer_t *peer){
   VALUE argv[0];
   VALUE user = rb_class_new_instance(0, argv, rb_cUser);
 
