@@ -5,8 +5,8 @@ static VALUE rb_mTelegram;
 static VALUE rb_cPeerId;
 static VALUE rb_cMessage;
 static VALUE rb_cUser;
-extern tgl_peer_t *Peers[];
-extern int peer_num;
+tgl_peer_t *Peers[];
+int peer_num;
 
 static VALUE load_config(VALUE self, VALUE pub_key){
   Check_Type(pub_key, T_STRING);
