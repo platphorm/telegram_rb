@@ -330,7 +330,7 @@ void usage (void) {
 }
 
 extern char *rsa_public_key_name;
-extern int verbosity;
+//extern int verbosity;
 extern int default_dc_num;
 
 char *log_net_file;
@@ -351,7 +351,7 @@ void args_parse (int argc, char **argv) {
       rsa_public_key_name = tstrdup (optarg);
       break;
     case 'v':
-      verbosity ++;
+      //verbosity ++;
       break;
     case 'N':
       msg_num_mode ++;
