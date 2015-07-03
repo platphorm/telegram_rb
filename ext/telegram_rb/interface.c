@@ -1358,7 +1358,7 @@ extern char *secret_chat_file_name;
 extern char *downloads_directory;
 extern char *config_directory;
 extern char *binlog_file_name;
-extern char *lua_file;
+char *lua_file;
 extern char *python_file;
 extern struct event *term_ev;
 
